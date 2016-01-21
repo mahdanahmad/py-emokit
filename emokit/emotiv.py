@@ -1,5 +1,8 @@
 import os
 import platform
+
+from env import *
+
 system_platform = platform.system()
 if system_platform == "Windows":
         import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
@@ -256,7 +259,7 @@ def hid_enumerate():
         for key in keys:
             print "%s : %s" % (key, d[key])
             print ""
-  
+
 
 def is_old_model(serial_number):
         if "GM" in serial_number[-2:]:
@@ -388,7 +391,11 @@ class Emotiv(object):
             'Y': {'value': 0, 'quality': 0},
             'Unknown': {'value': 0, 'quality': 0}
         }
-        self.serial_number = serial_number  # You will need to set this manually for OS X.
+        try:
+            self.serial_number = env_serial
+        except NameError:
+            self.serial_number = serial_number  # You will need to set this manually for OS X.
+
         self.old_model = False
 
     def setup(self):
@@ -405,7 +412,7 @@ class Emotiv(object):
 
     def setup_windows(self):
         """
-        Setup for headset on the Windows platform. 
+        Setup for headset on the Windows platform.
         """
         devices = []
         try:
@@ -506,17 +513,23 @@ class Emotiv(object):
         _os_decryption = False
         # Change these values to the hex equivalent from the output of hid_enumerate. If they are incorrect.
         # Current values = VendorID: 8609 ProductID: 1
-        hidraw = hid.device(0x21a1, 0x0001)
-        if not hidraw:
-            hidraw = hid.device(0x21a1, 0x1234)
-        if not hidraw:
-            hidraw = hid.device(0xed02, 0x1234)
-        if not hidraw:
-            print "Device not found. Uncomment the code in setup_darwin and modify hid.device(vendor_id, product_id)"
-            raise ValueError
-        if self.serial_number == "":
-            print "Serial number needs to be specified manually in __init__()."
-            raise ValueError
+        try:
+            hidraw = hid.device(env_emoVID, env_emoPID)
+            if not hidraw:
+                print "Device not found. Uncomment the code in setup_darwin and modify hid.device(vendor_id, product_id)"
+                raise ValueError
+        except NameError:
+            if not hidraw:
+                hidraw = hid.device(0x21a1, 0x1234)
+            if not hidraw:
+                hidraw = hid.device(0xed02, 0x1234)
+            if not hidraw:
+                print "Device not found. Uncomment the code in setup_darwin and modify hid.device(vendor_id, product_id)"
+                raise ValueError
+            if self.serial_number == "":
+                print "Serial number needs to be specified manually in __init__()."
+                raise ValueError
+                
         crypto = gevent.spawn(self.setup_crypto, self.serial_number)
         console_updater = gevent.spawn(self.update_console)
         zero = 0
