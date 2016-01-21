@@ -1,0 +1,6 @@
+.DS_Store
+build
+emokit/__init__.pyc
+emotiv.pyc
+dist
+emokit.egg-info
