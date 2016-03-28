@@ -529,7 +529,7 @@ class Emotiv(object):
             if self.serial_number == "":
                 print "Serial number needs to be specified manually in __init__()."
                 raise ValueError
-                
+
         crypto = gevent.spawn(self.setup_crypto, self.serial_number)
         console_updater = gevent.spawn(self.update_console)
         zero = 0
@@ -564,7 +564,7 @@ class Emotiv(object):
         """
         if is_old_model(sn):
             self.old_model = True
-        print self.old_model
+        # print self.old_model
         k = ['\0'] * 16
         k[0] = sn[-1]
         k[1] = '\0'
@@ -596,8 +596,8 @@ class Emotiv(object):
         key = ''.join(k)
         iv = Random.new().read(AES.block_size)
         cipher = AES.new(key, AES.MODE_ECB, iv)
-        for i in k:
-            print "0x%.02x " % (ord(i))
+        # for i in k:
+        #     print "0x%.02x " % (ord(i))
         while self.running:
             while not tasks.empty():
                 task = tasks.get()
