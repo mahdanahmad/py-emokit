@@ -5,6 +5,11 @@ import scipy.signal as signal
 
 from env import *
 
+low_limit       = 4
+high_limit      = 30
+split_amount    = 5
+sampling_rate   = 129
+
 def initdummy() :
     with open('dummy-data') as afile :
         result = []
@@ -65,6 +70,8 @@ def split(data, amount) :
     index       = data.size / amount
     indices     = np.arange(index, index * amount, index)
 
+    # print indices
+
     return np.split(data, indices)
 
 def run() :
@@ -73,8 +80,8 @@ def run() :
     up_data     = readFromFile('data/8.5-up')
     up          = up_data[:,9]
 
-    down_data   = readFromFile('data/10-down')
-    down        = down_data[:,9]
+    stop_data   = readFromFile('data/10-stop')
+    stop        = stop_data[:,9]
 
     right_data  = readFromFile('data/12-right')
     right       = right_data[:,9]
@@ -82,43 +89,43 @@ def run() :
     left_data   = readFromFile('data/15-left')
     left        = left_data[:,9]
 
-    # splitted_down   = np.array_split(down_data, 10)
-    splitted_down   = split(down, 10)
+    splitted    = split(right, split_amount)
 
-    splitted_down[:]    = [doCentering(val) for val in splitted_down]
-    splitted_down[:]    = [doFiltering(val, 4, 30, 129, 10) for val in splitted_down]
-    splitted_down[:]    = [createFFT(val) for val in splitted_down]
-    splitted_down[:]    = [createPSD(val, 129) for val in splitted_down]
+    splitted[:] = [doCentering(val) for val in splitted]
+    splitted[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in splitted]
+    splitted[:] = [createFFT(val) for val in splitted]
+    splitted[:] = [createPSD(val, sampling_rate) for val in splitted]
 
-    for val in splitted_down:
+    for key, val in enumerate(splitted):
         plt.plot(val)
-        plt.figure()
+        if (key < (len(splitted) - 1)) :
+            plt.figure()
 
     plt.show()
 
     # centered_up     = doCentering(up)
-    # centered_down   = doCentering(down)
+    # centered_stop   = doCentering(stop)
     # centered_right  = doCentering(right)
     # centered_left   = doCentering(left)
     #
     # filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
-    # filtered_down   = doFiltering(centered_down, 4, 30, 129, 10)
+    # filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
     # filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
     # filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
     #
     # fft_up          = createFFT(filtered_up)
-    # fft_down        = createFFT(filtered_down)
+    # fft_stop        = createFFT(filtered_stop)
     # fft_right       = createFFT(filtered_right)
     # fft_left        = createFFT(filtered_left)
     #
     # psd_up          = createPSD(fft_up, 129)
-    # psd_down        = createPSD(fft_down, 129)
+    # psd_stop        = createPSD(fft_stop, 129)
     # psd_right       = createPSD(fft_right, 129)
     # psd_left        = createPSD(fft_left, 129)
     #
     # plt.plot(psd_up)
     # plt.figure()
-    # plt.plot(psd_down)
+    # plt.plot(psd_stop)
     # plt.figure()
     # plt.plot(psd_right)
     # plt.figure()
