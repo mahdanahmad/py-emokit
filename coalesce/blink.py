@@ -13,7 +13,7 @@ class Game():
         #window setup
         pygame.display.set_caption(CAPTION)
         os.environ["SDL_VIDEO_CENTERED"] = "True"
-        self.fps = 60.0
+        self.fps = 12.0
 
         self.clock = pygame.time.Clock()
         self.last_tick = pygame.time.get_ticks()
@@ -27,15 +27,15 @@ class Game():
         self.alpha = 0
         self.a_change = True
         #Tweak this to change speed
-        self.blink_spd = 4
+        self.blink_spd = 255
 
         #start loop
-        self.clock.tick(self.fps)
         while 1:
             self.Loop()
 
     def Loop(self):
         # main game loop
+        self.clock.tick(self.fps)
         self.eventLoop()
 
         self.last_tick = pygame.time.get_ticks()
@@ -44,12 +44,12 @@ class Game():
         #Check if alpha is going up
         if self.a_change:
             self.alpha += self.blink_spd
-            if self.alpha >= 175:#if all the way up go down
+            if self.alpha >= 255:#if all the way up go down
                 self.a_change = False
         #Check if alpha is going down
         elif self.a_change == False:
             self.alpha += -self.blink_spd
-            if self.alpha <= 30: #if all the way down go up
+            if self.alpha <= 0: #if all the way down go up
                 self.a_change = True
 
         self.rect.set_alpha(self.alpha)

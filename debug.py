@@ -61,76 +61,69 @@ def createPSD(data, fs = 128) :
 
     return total / periode
 
+def split(data, amount) :
+    index       = data.size / amount
+    indices     = np.arange(index, index * amount, index)
+
+    return np.split(data, indices)
+
 def run() :
     start_time  = time.time()
 
-    up_data     = readFromFile('8.5-up')
+    up_data     = readFromFile('data/8.5-up')
     up          = up_data[:,9]
 
-    down_data   = readFromFile('10-down')
+    down_data   = readFromFile('data/10-down')
     down        = down_data[:,9]
 
-    right_data  = readFromFile('12-right')
+    right_data  = readFromFile('data/12-right')
     right       = right_data[:,9]
 
-    left_data   = readFromFile('15-left')
+    left_data   = readFromFile('data/15-left')
     left        = left_data[:,9]
 
-    centered_up     = doCentering(up)
-    centered_down   = doCentering(down)
-    centered_right  = doCentering(right)
-    centered_left   = doCentering(left)
+    # splitted_down   = np.array_split(down_data, 10)
+    splitted_down   = split(down, 10)
 
-    filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
-    filtered_down   = doFiltering(centered_down, 4, 30, 129, 10)
-    filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
-    filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
+    splitted_down[:]    = [doCentering(val) for val in splitted_down]
+    splitted_down[:]    = [doFiltering(val, 4, 30, 129, 10) for val in splitted_down]
+    splitted_down[:]    = [createFFT(val) for val in splitted_down]
+    splitted_down[:]    = [createPSD(val, 129) for val in splitted_down]
 
-    fft_up          = createFFT(filtered_up)
-    fft_down        = createFFT(filtered_down)
-    fft_right       = createFFT(filtered_right)
-    fft_left        = createFFT(filtered_left)
+    for val in splitted_down:
+        plt.plot(val)
+        plt.figure()
 
-    psd_up          = createPSD(fft_up, 129)
-    psd_down        = createPSD(fft_down, 129)
-    psd_right       = createPSD(fft_right, 129)
-    psd_left        = createPSD(fft_left, 129)
-
-    plt.plot(psd_up)
-    plt.figure()
-    plt.plot(psd_down)
-    plt.figure()
-    plt.plot(psd_right)
-    plt.figure()
-    plt.plot(psd_left)
     plt.show()
 
-    # centered    = doCentering(column)
-    # filtered    = doFiltering(centered, 4, 30, 129, 5)
-    # fft_result  = createFFT(centered)
-    # psd_result  = createPSD(fft_result, 128)
+    # centered_up     = doCentering(up)
+    # centered_down   = doCentering(down)
+    # centered_right  = doCentering(right)
+    # centered_left   = doCentering(left)
     #
-    # fft_result_wf    = createFFT(filtered)
-    # psd_result_wf    = createPSD(fft_result_wf, 128)
+    # filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
+    # filtered_down   = doFiltering(centered_down, 4, 30, 129, 10)
+    # filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
+    # filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
     #
-    # fp, perio       = signal.periodogram(fft_result, window='boxcar')
-    # fw, welch       = signal.welch(fft_result, window='boxcar')
+    # fft_up          = createFFT(filtered_up)
+    # fft_down        = createFFT(filtered_down)
+    # fft_right       = createFFT(filtered_right)
+    # fft_left        = createFFT(filtered_left)
     #
-
-    # plt.plot(np.fft.rfft(centered))
+    # psd_up          = createPSD(fft_up, 129)
+    # psd_down        = createPSD(fft_down, 129)
+    # psd_right       = createPSD(fft_right, 129)
+    # psd_left        = createPSD(fft_left, 129)
+    #
+    # plt.plot(psd_up)
+    # plt.figure()
+    # plt.plot(psd_down)
+    # plt.figure()
+    # plt.plot(psd_right)
+    # plt.figure()
+    # plt.plot(psd_left)
     # plt.show()
-    # plt.plot(centered)
-    # plt.figure()
-    # plt.plot(filtered)
-    # plt.figure()
-    # plt.plot(fft_result)
-    # plt.figure()
-    # plt.plot(fft_result_wf)
-    # plt.figure()
-    # plt.plot(psd_result)
-    # plt.figure()
-    # plt.plot(psd_result_wf)
-    # plt.figure()
 
     # b, a = createButterBandpass(4, 20, 128, 10)
     #
