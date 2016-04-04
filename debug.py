@@ -89,48 +89,48 @@ def run() :
     left_data   = readFromFile('data/15-left')
     left        = left_data[:,9]
 
-    splitted    = split(right, split_amount)
-
-    splitted[:] = [doCentering(val) for val in splitted]
-    splitted[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in splitted]
-    splitted[:] = [createFFT(val) for val in splitted]
-    splitted[:] = [createPSD(val, sampling_rate) for val in splitted]
-
-    for key, val in enumerate(splitted):
-        plt.plot(val)
-        if (key < (len(splitted) - 1)) :
-            plt.figure()
-
-    plt.show()
-
-    # centered_up     = doCentering(up)
-    # centered_stop   = doCentering(stop)
-    # centered_right  = doCentering(right)
-    # centered_left   = doCentering(left)
+    # splitted    = split(right, split_amount)
     #
-    # filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
-    # filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
-    # filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
-    # filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
+    # splitted[:] = [doCentering(val) for val in splitted]
+    # splitted[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in splitted]
+    # splitted[:] = [createFFT(val) for val in splitted]
+    # splitted[:] = [createPSD(val, sampling_rate) for val in splitted]
     #
-    # fft_up          = createFFT(filtered_up)
-    # fft_stop        = createFFT(filtered_stop)
-    # fft_right       = createFFT(filtered_right)
-    # fft_left        = createFFT(filtered_left)
+    # for key, val in enumerate(splitted):
+    #     plt.plot(val)
+    #     if (key < (len(splitted) - 1)) :
+    #         plt.figure()
     #
-    # psd_up          = createPSD(fft_up, 129)
-    # psd_stop        = createPSD(fft_stop, 129)
-    # psd_right       = createPSD(fft_right, 129)
-    # psd_left        = createPSD(fft_left, 129)
-    #
-    # plt.plot(psd_up)
-    # plt.figure()
-    # plt.plot(psd_stop)
-    # plt.figure()
-    # plt.plot(psd_right)
-    # plt.figure()
-    # plt.plot(psd_left)
     # plt.show()
+
+    centered_up     = doCentering(up)
+    centered_stop   = doCentering(stop)
+    centered_right  = doCentering(right)
+    centered_left   = doCentering(left)
+
+    filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
+    filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
+    filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
+    filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
+
+    fft_up          = createFFT(filtered_up)
+    fft_stop        = createFFT(filtered_stop)
+    fft_right       = createFFT(filtered_right)
+    fft_left        = createFFT(filtered_left)
+
+    psd_up          = createPSD(fft_up, 129)
+    psd_stop        = createPSD(fft_stop, 129)
+    psd_right       = createPSD(fft_right, 129)
+    psd_left        = createPSD(fft_left, 129)
+
+    plt.plot(psd_up)
+    plt.figure()
+    plt.plot(psd_stop)
+    plt.figure()
+    plt.plot(psd_right)
+    plt.figure()
+    plt.plot(psd_left)
+    plt.show()
 
     # b, a = createButterBandpass(4, 20, 128, 10)
     #
