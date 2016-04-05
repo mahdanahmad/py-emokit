@@ -24,7 +24,7 @@ clr_blue    = (0, 0, 255)
 
 clr_default = clr_white
 
-def_side    = 200
+def_side    = height / 4
 
 screen.fill(clr_black)
 
@@ -35,7 +35,7 @@ class Rectangle(pygame.Rect):
 
         self.run    = True
 
-        self.fps    = fps
+        self.fps    = fps * 2
 
         self.rect   = pygame.Surface((def_side, def_side))
         self.rect.fill(clr_default)
@@ -48,8 +48,8 @@ class Rectangle(pygame.Rect):
     def loop(self) :
         self.eventLoop()
 
-        self.last_tick = pygame.time.get_ticks()
         self.clock.tick(self.fps)
+        self.last_tick = pygame.time.get_ticks()
 
         screen.fill(clr_black)
         if (self.run) :
