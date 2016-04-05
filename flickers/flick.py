@@ -72,8 +72,6 @@ class Rectangle(pygame.Rect):
         self.clock.tick_busy_loop(global_fps)
         self.last_tick = pygame.time.get_ticks()
 
-        # print self.count
-
         screen.fill(clr_black)
         if (self.run) :
             for key, val in enumerate(self.periode):
