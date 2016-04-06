@@ -1,3 +1,4 @@
+import sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,6 +11,11 @@ low_limit       = 4
 high_limit      = 30
 split_amount    = 5
 sampling_rate   = 129
+
+try :
+    source      = sys.argv[1]
+except:
+    source      = 'data/10-stop'
 
 def initdummy() :
     with open('dummy-data') as afile :
@@ -78,17 +84,43 @@ def split(data, amount) :
 def run() :
     start_time  = time.time()
 
-    up_data     = readFromFile('data/8.5-up')
-    up          = up_data[:,9]
+    print source
 
-    stop_data   = readFromFile('data/10-stop')
-    stop        = stop_data[:,9]
+    single_data = readFromFile(source)
+    single      = single_data[:,8]
 
-    right_data  = readFromFile('data/12-right')
-    right       = right_data[:,9]
+    centered    = doCentering(single)
+    filtered    = doFiltering(centered, low_limit, high_limit, sampling_rate, 10)
+    fft         = createFFT(filtered)
+    psd         = createPSD(fft, sampling_rate)
 
-    left_data   = readFromFile('data/15-left')
-    left        = left_data[:,9]
+    # plt.plot(single)
+    # plt.title('Raw data')
+    # plt.figure()
+    # plt.plot(centered)
+    # plt.title('Centered data')
+    # plt.figure()
+    # plt.plot(filtered)
+    # plt.title('Filtered data')
+    # plt.figure()
+    # plt.plot(fft)
+    # plt.title('FFT Result')
+    # plt.figure()
+    plt.plot(psd)
+    plt.title('PSD Result')
+    plt.show()
+
+    # up_data     = readFromFile('data/8.5-up')
+    # up          = up_data[:,9]
+    #
+    # stop_data   = readFromFile('data/10-stop')
+    # stop        = stop_data[:,9]
+    #
+    # right_data  = readFromFile('data/12-right')
+    # right       = right_data[:,9]
+    #
+    # left_data   = readFromFile('data/15-left')
+    # left        = left_data[:,9]
 
     # splitted    = split(right, split_amount)
     #
@@ -104,34 +136,34 @@ def run() :
     #
     # plt.show()
 
-    centered_up     = doCentering(up)
-    centered_stop   = doCentering(stop)
-    centered_right  = doCentering(right)
-    centered_left   = doCentering(left)
-
-    filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
-    filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
-    filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
-    filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
-
-    fft_up          = createFFT(filtered_up)
-    fft_stop        = createFFT(filtered_stop)
-    fft_right       = createFFT(filtered_right)
-    fft_left        = createFFT(filtered_left)
-
-    psd_up          = createPSD(fft_up, 129)
-    psd_stop        = createPSD(fft_stop, 129)
-    psd_right       = createPSD(fft_right, 129)
-    psd_left        = createPSD(fft_left, 129)
-
-    plt.plot(psd_up)
-    plt.figure()
-    plt.plot(psd_stop)
-    plt.figure()
-    plt.plot(psd_right)
-    plt.figure()
-    plt.plot(psd_left)
-    plt.show()
+    # centered_up     = doCentering(up)
+    # centered_stop   = doCentering(stop)
+    # centered_right  = doCentering(right)
+    # centered_left   = doCentering(left)
+    #
+    # filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
+    # filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
+    # filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
+    # filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
+    #
+    # fft_up          = createFFT(filtered_up)
+    # fft_stop        = createFFT(filtered_stop)
+    # fft_right       = createFFT(filtered_right)
+    # fft_left        = createFFT(filtered_left)
+    #
+    # psd_up          = createPSD(fft_up, 129)
+    # psd_stop        = createPSD(fft_stop, 129)
+    # psd_right       = createPSD(fft_right, 129)
+    # psd_left        = createPSD(fft_left, 129)
+    #
+    # plt.plot(psd_up)
+    # plt.figure()
+    # plt.plot(psd_stop)
+    # plt.figure()
+    # plt.plot(psd_right)
+    # plt.figure()
+    # plt.plot(psd_left)
+    # plt.show()
 
     # b, a = createButterBandpass(4, 20, 128, 10)
     #
@@ -159,5 +191,5 @@ def run() :
     print 'elapsed = %.3f s' % (elapsed_time)
 
 if __name__ == "__main__":
-    # run()
+    run()
     # print env_serial\

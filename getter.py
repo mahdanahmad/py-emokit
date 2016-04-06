@@ -1,14 +1,15 @@
 from emokit.emotiv import Emotiv
 from datetime import datetime
-import sys
-import platform
+
+import os, sys, platform
+
 if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
 if __name__ == "__main__":
     try :
-        name    = int(sys.argv[1])
+        name    = sys.argv[1]
     except:
         name    = 'unnamed'
     try :
@@ -21,9 +22,9 @@ if __name__ == "__main__":
     gevent.spawn(headset.setup)
     gevent.sleep(0)
 
-    filename    = datetime.now().strftime('%Y%m%d-%H%M%S') + "_" + name + ".csv"
+    filename    = datetime.now().strftime('%Y%m%d-%H%M%S') + "_" + name + "_" + str(time) + ".csv"
     output      = open(filename, 'w')
-    output.write("SECOND,COUNTER,F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4,GYRO_X,GYRO_Y\n")
+    # output.write("SECOND,COUNTER,F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4,GYRO_X,GYRO_Y\n")
 
     second      = 0
     first       = -1
@@ -43,5 +44,8 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
         headset.close()
+        os.system('clear')
     finally:
         headset.close()
+        os.system('clear')
+        print filename
