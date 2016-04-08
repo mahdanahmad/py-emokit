@@ -1,6 +1,6 @@
 from emokit.emotiv import Emotiv
 from datetime import datetime
-from prepocess import *
+from preprocess import *
 
 import os, sys, platform
 import matplotlib.pyplot as plt

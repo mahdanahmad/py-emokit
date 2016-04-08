@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from env import *
 from datetime import datetime
-from prepocess import *
+from preprocess import *
 
 low_limit       = 4
 high_limit      = 30
