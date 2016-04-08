@@ -1,11 +1,10 @@
 import sys
 import time
-import numpy as np
 import matplotlib.pyplot as plt
-import scipy.signal as signal
 
 from env import *
 from datetime import datetime
+from prepocess import *
 
 low_limit       = 4
 high_limit      = 30
@@ -17,14 +16,6 @@ try :
 except:
     source      = 'data/10-stop'
 
-def initdummy() :
-    with open('dummy-data') as afile :
-        result = []
-        for line in afile :
-            result.append(map(int, line.split(',')))
-
-        return np.array(result)
-
 def readFromFile(filename) :
     with open(filename) as afile :
         result = []
@@ -33,61 +24,13 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def doCentering(data) :
-    return data - data.mean()
-
-def createButterBandpass(lowcut, highcut, fs, order = 10) :
-    nyq = 0.5 * fs
-
-    low = lowcut / nyq
-    high = highcut / nyq
-
-    return signal.butter(order, [low, high], btype='band')
-
-def doFiltering(data, lowcut, highcut, fs, order = 10) :
-    b, a = createButterBandpass(lowcut, highcut, fs, order)
-    y = signal.lfilter(b, a, data)
-
-    return y
-
-def createFFT(data) :
-    return np.fft.rfft(data)
-
-def createPSD(data, fs = 128) :
-    conj        = np.conjugate(data)
-    onesided    = conj * data
-
-    periode     = onesided.size / (fs / 2)
-
-    temp        = []
-    length      = 9999
-    for idx in range(periode):
-        temp.append(onesided[0+idx::periode])
-        if (length > onesided[0+idx::periode].size) :
-            length = onesided[0+idx::periode].size
-
-    total = np.zeros((length), dtype=np.complex128)
-
-    for idx in range(periode):
-        total += np.array(temp[idx])[:length:]
-
-    return total / periode
-
-def split(data, amount) :
-    index       = data.size / amount
-    indices     = np.arange(index, index * amount, index)
-
-    # print indices
-
-    return np.split(data, indices)
-
 def run() :
     start_time  = time.time()
 
-    print source
+    # print source
 
     single_data = readFromFile(source)
-    single      = single_data[:,8]
+    single      = single_data[:,9]
 
     centered    = doCentering(single)
     filtered    = doFiltering(centered, low_limit, high_limit, sampling_rate, 10)
@@ -122,7 +65,7 @@ def run() :
     # left_data   = readFromFile('data/15-left')
     # left        = left_data[:,9]
 
-    # splitted    = split(right, split_amount)
+    # splitted    = np.array_split(right, split_amount)
     #
     # splitted[:] = [doCentering(val) for val in splitted]
     # splitted[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in splitted]

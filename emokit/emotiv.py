@@ -402,6 +402,7 @@ class Emotiv(object):
         """
         Runs setup function depending on platform.
         """
+        os.system('clear')
         print system_platform + " detected."
         if system_platform == "Windows":
             self.setup_windows()
@@ -631,15 +632,15 @@ class Emotiv(object):
         """
         if self.display_output:
             while self.running:
-                if system_platform == "Windows":
-                    os.system('cls')
-                else:
-                    os.system('clear')
-                print "Packets Received: %s Packets Processed: %s" % (self.packets_received, self.packets_processed)
-                print('\n'.join("%s Reading: %s Quality: %s" %
-                                (k[1], self.sensors[k[1]]['value'],
-                                 self.sensors[k[1]]['quality']) for k in enumerate(self.sensors)))
-                print "Battery: %i" % g_battery
+                # if system_platform == "Windows":
+                #     os.system('cls')
+                # else:
+                #     os.system('clear')
+                # print "Packets Received: %s Packets Processed: %s" % (self.packets_received, self.packets_processed)
+                # print('\n'.join("%s Reading: %s Quality: %s" %
+                #                 (k[1], self.sensors[k[1]]['value'],
+                #                  self.sensors[k[1]]['quality']) for k in enumerate(self.sensors)))
+                # print "Battery: %i" % g_battery
                 gevent.sleep(.001)
 
 if __name__ == "__main__":
