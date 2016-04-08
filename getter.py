@@ -30,7 +30,8 @@ if __name__ == "__main__":
     fullpath    = os.path.join(folder, filename)
     output      = open(fullpath, 'w')
 
-    shown_data  = []
+    O1          = []
+    O2          = []
     # output.write("SECOND,COUNTER,F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4,GYRO_X,GYRO_Y\n")
 
     second      = 0
@@ -40,14 +41,15 @@ if __name__ == "__main__":
             packet = headset.dequeue()
             output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (second, packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
 
-            shown_data.append(packet.O2[0])
+            O2.append(packet.O1[0])
+            O2.append(packet.O2[0])
 
             if (first == -1) :
                 first = packet.counter
             else :
                 if (packet.counter == first) :
                     second  = second + 1
-                    # print second
+                    print second
 
             gevent.sleep(0)
 
@@ -57,26 +59,21 @@ if __name__ == "__main__":
     finally:
         headset.close()
         os.system('clear')
-        # print shown_data
+        # print O2
         # print filename
 
-        centered    = doCentering(shown_data)
-        filtered    = doFiltering(centered, 4, 30, 129, 10)
-        fft         = createFFT(filtered)
-        psd         = createPSD(fft, 129)
+        data        = []
+        data.append(O1)
+        data.append(O2)
 
-        plt.plot(shown_data)
-        plt.title('Raw data')
-        plt.figure()
-        plt.plot(centered)
-        plt.title('Centered data')
-        plt.figure()
-        plt.plot(filtered)
-        plt.title('Filtered data')
-        plt.figure()
-        plt.plot(fft)
-        plt.title('FFT Result')
-        plt.figure()
-        plt.plot(psd)
-        plt.title('PSD Result')
+        data[:] = [doCentering(val) for val in data]
+        data[:] = [doFiltering(val, 4, 30, 129, 10) for val in data]
+        data[:] = [createFFT(val) for val in data]
+        data[:] = [createPSD(val, 129) for val in data]
+
+        for key, val in enumerate(data):
+            plt.plot(val)
+            if (key < (len(data) - 1)) :
+                plt.figure()
+
         plt.show()

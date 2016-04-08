@@ -6,8 +6,8 @@ from env import *
 from datetime import datetime
 from preprocess import *
 
-low_limit       = 4
-high_limit      = 30
+low_limit       = 6
+high_limit      = 20
 split_amount    = 5
 sampling_rate   = 129
 
@@ -29,84 +29,24 @@ def run() :
 
     # print source
 
+
     single_data = readFromFile(source)
-    single      = single_data[:,9]
 
-    centered    = doCentering(single)
-    filtered    = doFiltering(centered, low_limit, high_limit, sampling_rate, 10)
-    fft         = createFFT(filtered)
-    psd         = createPSD(fft, sampling_rate)
+    data        = []
+    data.append(single_data[:,8])
+    data.append(single_data[:,9])
 
-    # plt.plot(single)
-    # plt.title('Raw data')
-    # plt.figure()
-    # plt.plot(centered)
-    # plt.title('Centered data')
-    # plt.figure()
-    # plt.plot(filtered)
-    # plt.title('Filtered data')
-    # plt.figure()
-    # plt.plot(fft)
-    # plt.title('FFT Result')
-    # plt.figure()
-    plt.plot(psd)
-    plt.title('PSD Result')
+    data[:] = [doCentering(val) for val in data]
+    data[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in data]
+    data[:] = [createFFT(val) for val in data]
+    data[:] = [createPSD(val, sampling_rate) for val in data]
+
+    for key, val in enumerate(data):
+        plt.plot(val)
+        if (key < (len(data) - 1)) :
+            plt.figure()
+
     plt.show()
-
-    # up_data     = readFromFile('data/8.5-up')
-    # up          = up_data[:,9]
-    #
-    # stop_data   = readFromFile('data/10-stop')
-    # stop        = stop_data[:,9]
-    #
-    # right_data  = readFromFile('data/12-right')
-    # right       = right_data[:,9]
-    #
-    # left_data   = readFromFile('data/15-left')
-    # left        = left_data[:,9]
-
-    # splitted    = np.array_split(right, split_amount)
-    #
-    # splitted[:] = [doCentering(val) for val in splitted]
-    # splitted[:] = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in splitted]
-    # splitted[:] = [createFFT(val) for val in splitted]
-    # splitted[:] = [createPSD(val, sampling_rate) for val in splitted]
-    #
-    # for key, val in enumerate(splitted):
-    #     plt.plot(val)
-    #     if (key < (len(splitted) - 1)) :
-    #         plt.figure()
-    #
-    # plt.show()
-
-    # centered_up     = doCentering(up)
-    # centered_stop   = doCentering(stop)
-    # centered_right  = doCentering(right)
-    # centered_left   = doCentering(left)
-    #
-    # filtered_up     = doFiltering(centered_up, 4, 30, 129, 10)
-    # filtered_stop   = doFiltering(centered_stop, 4, 30, 129, 10)
-    # filtered_right  = doFiltering(centered_right, 4, 30, 129, 10)
-    # filtered_left   = doFiltering(centered_left, 4, 30, 129, 10)
-    #
-    # fft_up          = createFFT(filtered_up)
-    # fft_stop        = createFFT(filtered_stop)
-    # fft_right       = createFFT(filtered_right)
-    # fft_left        = createFFT(filtered_left)
-    #
-    # psd_up          = createPSD(fft_up, 129)
-    # psd_stop        = createPSD(fft_stop, 129)
-    # psd_right       = createPSD(fft_right, 129)
-    # psd_left        = createPSD(fft_left, 129)
-    #
-    # plt.plot(psd_up)
-    # plt.figure()
-    # plt.plot(psd_stop)
-    # plt.figure()
-    # plt.plot(psd_right)
-    # plt.figure()
-    # plt.plot(psd_left)
-    # plt.show()
 
     # b, a = createButterBandpass(4, 20, 128, 10)
     #
