@@ -6,7 +6,7 @@ from env import *
 from datetime import datetime
 from preprocess import *
 
-low_limit       = 6
+low_limit       = 5
 high_limit      = 20
 split_amount    = 5
 sampling_rate   = 129

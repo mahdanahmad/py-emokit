@@ -2,7 +2,7 @@ from emokit.emotiv import Emotiv
 from datetime import datetime
 from preprocess import *
 
-import os, sys, platform
+import os, sys, errno, platform
 import matplotlib.pyplot as plt
 
 if platform.system() == "Windows":
@@ -24,10 +24,18 @@ if __name__ == "__main__":
     gevent.spawn(headset.setup)
     gevent.sleep(0)
 
-    folder      = 'data/fresh/'
-    filename    = datetime.now().strftime('%Y%m%d-%H%M%S') + "_" + name + "_" + str(time) + ".csv"
+    folder      = 'data/' + datetime.now().strftime('%Y%m%d') + '/'
+    filename    = datetime.now().strftime('%H%M%S') + "_" + name + "_" + str(time) + ".csv"
 
     fullpath    = os.path.join(folder, filename)
+
+    if not os.path.exists(os.path.dirname(fullpath)):
+        try:
+            os.makedirs(os.path.dirname(fullpath))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+
     output      = open(fullpath, 'w')
 
     O1          = []
@@ -41,7 +49,7 @@ if __name__ == "__main__":
             packet = headset.dequeue()
             output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (second, packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
 
-            O2.append(packet.O1[0])
+            O1.append(packet.O1[0])
             O2.append(packet.O2[0])
 
             if (first == -1) :
@@ -67,7 +75,7 @@ if __name__ == "__main__":
         data.append(O2)
 
         data[:] = [doCentering(val) for val in data]
-        data[:] = [doFiltering(val, 4, 30, 129, 10) for val in data]
+        data[:] = [doFiltering(val, 6, 30, 129, 10) for val in data]
         data[:] = [createFFT(val) for val in data]
         data[:] = [createPSD(val, 129) for val in data]
 
