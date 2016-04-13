@@ -1,4 +1,4 @@
-import pygame, sys, thread, time
+import pygame, sys, thread, time, os
 from pygame.locals import *
 
 pygame.init()
@@ -27,6 +27,10 @@ clr_default = clr_white
 def_side    = height / 4
 
 screen.fill(clr_black)
+
+img_loc     = os.path.join("images", "arrow-forward.png")
+img         = pygame.image.load(img_loc)
+img         = pygame.transform.scale(img, (def_side, def_side))
 
 class Rectangle(pygame.Rect):
     def __init__(self, fps) :
@@ -60,10 +64,11 @@ class Rectangle(pygame.Rect):
         else :
             self.alpha = 255
 
+        self.rect.blit(img, (0, 0))
         self.rect.set_alpha(self.alpha)
         screen.blit(self.rect, ((width - def_side) / 2, (height - def_side) / 2))
 
-        pygame.display.update()
+        pygame.display.update(((width - def_side) / 2, (height - def_side) / 2, def_side, def_side))
 
     def eventLoop(self) :
         for event in pygame.event.get():

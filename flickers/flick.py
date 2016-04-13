@@ -22,7 +22,7 @@ clr_default = clr_white
 def_side    = height / 4
 
 global_fps  = 60
-rect_fps    = [7.5, 10, 12, 15]
+rect_fps    = [9, 10, 11, 12]
 # rect_fps    = [1, 1, 2, 2]
 
 screen.fill(clr_black)
