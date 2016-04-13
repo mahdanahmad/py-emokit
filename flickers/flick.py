@@ -1,7 +1,7 @@
 from pygame.locals import *
-from threading import Thread
+# from threading import Thread
 
-import pygame, sys, time, os
+import pygame, sys, threading, time, os
 
 pygame.init()
 info        = pygame.display.Info()
@@ -25,12 +25,12 @@ clr_default = clr_white
 def_side    = height / 4
 
 global_run  = True
-
+global_lock = threading.Lock()
 screen.fill(clr_back)
 
-class Rectangle(Thread):
+class Rectangle(threading.Thread):
     def __init__(self, freq) :
-        Thread.__init__(self)
+        threading.Thread.__init__(self)
         self.clock      = pygame.time.Clock()
         self.last_tick  = pygame.time.get_ticks()
         self.surface    = pygame.Surface((def_side, def_side))
