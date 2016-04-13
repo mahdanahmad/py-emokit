@@ -60,7 +60,7 @@ class Rectangle(pygame.Rect):
 
         screen.fill(clr_black)
         if (self.run) :
-            if (self.count == 0) :
+            if (self.count == delay) :
                 if self.alpha == 0 :
                     self.alpha  = 255
                 elif self.alpha == 255 :
@@ -77,6 +77,10 @@ class Rectangle(pygame.Rect):
                     self.alpha      = 255
                     self.count      = 0
                     self.periode    = 0
+        else :
+            self.alpha      = 0
+            self.count      = 0
+            self.periode    = 0
 
         self.rect.set_alpha(self.alpha)
         screen.blit(self.rect, ((width - def_side) / 2, (height - def_side) / 2))
