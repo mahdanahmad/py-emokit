@@ -22,29 +22,25 @@ clr_red     = (255, 0, 0)
 clr_green   = (0, 255, 0)
 clr_blue    = (0, 0, 255)
 
+clr_back    = clr_black
 clr_default = clr_white
 
 def_side    = height / 4
 
-screen.fill(clr_black)
+screen.fill(clr_back)
 
-img_loc     = os.path.join("images", "arrow-forward.png")
+img_loc     = os.path.join("images", "circle-stop.png")
 img         = pygame.image.load(img_loc)
 img         = pygame.transform.scale(img, (def_side, def_side))
 
-class Rectangle(pygame.Rect):
+class Rectangle():
     def __init__(self, fps) :
         self.clock      = pygame.time.Clock()
         self.last_tick  = pygame.time.get_ticks()
-
-        self.run    = True
-
-        self.fps    = fps * 2
-
-        self.rect   = pygame.Surface((def_side, def_side))
-        self.rect.fill(clr_default)
-
-        self.alpha  = 0
+        self.rect       = pygame.Surface((def_side, def_side))
+        self.up         = 0
+        self.run        = True
+        self.fps        = fps * 2
 
         while True :
             self.loop()
@@ -53,19 +49,23 @@ class Rectangle(pygame.Rect):
         self.eventLoop()
 
         self.clock.tick(self.fps)
-        self.last_tick = pygame.time.get_ticks()
+        # self.last_tick = pygame.time.get_ticks()
 
-        screen.fill(clr_black)
         if (self.run) :
-            if self.alpha == 0 :
-                self.alpha  = 255
-            elif self.alpha == 255 :
-                self.alpha  = 0
-        else :
-            self.alpha = 255
+            if (self.up) :
+                self.rect.fill(clr_default)
+                self.rect.blit(img, (0, 0))
 
-        self.rect.blit(img, (0, 0))
-        self.rect.set_alpha(self.alpha)
+                self.up  = 0
+            else :
+                self.rect.fill(clr_back)
+
+                self.up  = 1
+        else :
+            self.rect.fill(clr_default)
+            self.rect.blit(img, (0, 0))
+
+        # self.rect.set_alpha(self.alpha)
         screen.blit(self.rect, ((width - def_side) / 2, (height - def_side) / 2))
 
         pygame.display.update(((width - def_side) / 2, (height - def_side) / 2, def_side, def_side))

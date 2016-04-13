@@ -1,5 +1,7 @@
-import pygame, sys, thread, time
 from pygame.locals import *
+from threading import Thread
+
+import pygame, sys, time, os
 
 pygame.init()
 info        = pygame.display.Info()
@@ -17,81 +19,50 @@ clr_red     = (255, 0, 0)
 clr_green   = (0, 255, 0)
 clr_blue    = (0, 0, 255)
 
+clr_back    = clr_black
 clr_default = clr_white
 
 def_side    = height / 4
 
-global_fps  = 60
-rect_fps    = [9, 10, 11, 12]
-# rect_fps    = [1, 1, 2, 2]
+global_run  = True
 
-screen.fill(clr_black)
+screen.fill(clr_back)
 
-class Rectangle(pygame.Rect):
-    def __init__(self) :
+class Rectangle(Thread):
+    def __init__(self, freq) :
+        Thread.__init__(self)
         self.clock      = pygame.time.Clock()
         self.last_tick  = pygame.time.get_ticks()
+        self.surface    = pygame.Surface((def_side, def_side))
+        self.up         = 0
+        self.fps        = freq * 2
+        # self.play       = True
 
-        self.run    = True
-
-        top_x       = (width / 4) * 2 - (def_side / 2)
-        top_y       = (height / 4) * 1 - (def_side / 2)
-        mid_x       = (width / 4) * 2 - (def_side / 2)
-        mid_y       = (height / 4) * 3 - (def_side / 2)
-        rgt_x       = (width / 4) * 3 - (def_side / 2)
-        rgt_y       = (height / 4) * 3 - (def_side / 2)
-        lft_x       = (width / 4) * 1 - (def_side / 2)
-        lft_y       = (height / 4) * 3 - (def_side / 2)
-
-        self.pos    = [(top_x, top_y), (mid_x, mid_y), (rgt_x, rgt_y), (lft_x, lft_y)]
-        self.rect   = []
-
-        count       = len(self.pos)
-        while (count > 0):
-           count    = count - 1
-
-           temp     = pygame.Surface((def_side, def_side))
-           temp.fill(clr_default)
-
-           self.rect.append(temp)
-
-        self.periode    = []
-        self.count      = [0, 0, 0, 0]
-        self.alpha      = [255, 255, 255, 255]
-
-        for val in rect_fps:
-            self.periode.append(global_fps / val)
-
-        start_time      = time.time()
+    def run(self) :
         while True :
+            # self.eventLoop()
             self.loop()
 
     def loop(self) :
-        self.eventLoop()
+        self.clock.tick(self.fps)
+        # self.last_tick = pygame.time.get_ticks()
 
-        self.clock.tick_busy_loop(global_fps)
-        self.last_tick = pygame.time.get_ticks()
+        if (global_run) :
+            if (self.up) :
+                self.surface.fill(clr_default)
+                # self.surface.blit(img, (0, 0))
 
-        screen.fill(clr_black)
-        if (self.run) :
-            for key, val in enumerate(self.periode):
-                if (self.count[key] < val / 2) :
-                    self.alpha[key] = 255
-                else :
-                    self.alpha[key] = 0
+                self.up  = 0
+            else :
+                self.surface.fill(clr_back)
 
-                self.count[key] = self.count[key] + 1
-                if (self.count[key] == val) : self.count[key] = 0
-
+                self.up  = 1
         else :
-            self.count  = [0, 0, 0, 0]
-            self.alpha  = [255, 255, 255, 255]
+            self.surface.fill(clr_default)
+            # self.surface.blit(img, (0, 0))
 
-        for key, value in enumerate(self.rect) :
-            value.set_alpha(self.alpha[key])
-            screen.blit(value, self.pos[key])
-
-        pygame.display.update()
+        screen.blit(self.surface, ((width - def_side) / 2, (height - def_side) / 2))
+        pygame.display.update(((width - def_side) / 2, (height - def_side) / 2, def_side, def_side))
 
     def eventLoop(self) :
         for event in pygame.event.get():
@@ -102,11 +73,29 @@ class Rectangle(pygame.Rect):
                 if event.key == K_ESCAPE :
                     pygame.quit()
                     sys.exit()
-                if event.key == K_SPACE :
-                    self.run = not self.run
+                # if event.key == K_SPACE :
+                #     self.play = not self.play
+
+def eventLoop() :
+    for event in pygame.event.get():
+        if event.type == QUIT :
+            pygame.quit()
+            sys.exit()
+        elif event.type == KEYDOWN :
+            if event.key == K_ESCAPE :
+                pygame.quit()
+                sys.exit()
+            if event.key == K_SPACE :
+                global global_run
+                global_run = not global_run
 
 def run() :
-    Rectangle();
+    forward         = Rectangle(10)
+    forward.daemon  = True
+    forward.start()
+
+    while True :
+        eventLoop()
 
 if __name__ == "__main__":
     run()
