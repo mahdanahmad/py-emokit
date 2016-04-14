@@ -9,6 +9,11 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
+low_limit       = 7
+high_limit      = 15
+filter_order    = 10
+sampling_rate   = 129
+
 if __name__ == "__main__":
     try :
         name    = sys.argv[1]
@@ -38,8 +43,24 @@ if __name__ == "__main__":
 
     output      = open(fullpath, 'w')
 
-    O1          = []
-    O2          = []
+    data = {
+        'second'    : [],
+        'counter'   : [],
+        'F3'        : [],
+        'FC5'       : [],
+        'AF3'       : [],
+        'F7'        : [],
+        'T7'        : [],
+        'P7'        : [],
+        'O1'        : [],
+        'O2'        : [],
+        'P8'        : [],
+        'T8'        : [],
+        'F8'        : [],
+        'AF4'       : [],
+        'FC6'       : [],
+        'F4'        : []
+    }
     # output.write("SECOND,COUNTER,F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4,GYRO_X,GYRO_Y\n")
 
     second      = 0
@@ -49,8 +70,22 @@ if __name__ == "__main__":
             packet = headset.dequeue()
             output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (second, packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
 
-            O1.append(packet.O1[0])
-            O2.append(packet.O2[0])
+            data['second'].append(second)
+            data['counter'].append(packet.counter)
+            data['F3'].append(packet.F3[0])
+            data['FC5'].append(packet.FC5[0])
+            data['AF3'].append(packet.AF3[0])
+            data['F7'].append(packet.F7[0])
+            data['T7'].append(packet.T7[0])
+            data['P7'].append(packet.P7[0])
+            data['O1'].append(packet.O1[0])
+            data['O2'].append(packet.O2[0])
+            data['P8'].append(packet.P8[0])
+            data['T8'].append(packet.T8[0])
+            data['F8'].append(packet.F8[0])
+            data['AF4'].append(packet.AF4[0])
+            data['FC6'].append(packet.FC6[0])
+            data['F4'].append(packet.F4[0])
 
             if (first == -1) :
                 first = packet.counter
@@ -67,21 +102,27 @@ if __name__ == "__main__":
     finally:
         headset.close()
         os.system('clear')
-        # print O2
-        # print filename
 
-        data        = []
-        data.append(O1)
-        data.append(O2)
+        for key, val in sorted(data.iteritems()):
+            if key is not 'second' and key is not 'counter' :
+                centered    = doCentering(val)
+                filtered    = doFiltering(centered, low_limit, high_limit, sampling_rate, filter_order)
+                fft_result  = createFFT(filtered)
+                psd_result  = createPSD(fft_result, sampling_rate)
 
-        data[:] = [doCentering(val) for val in data]
-        data[:] = [doFiltering(val, 6, 30, 129, 10) for val in data]
-        data[:] = [createFFT(val) for val in data]
-        data[:] = [createPSD(val, 129) for val in data]
-
-        for key, val in enumerate(data):
-            plt.plot(val)
-            if (key < (len(data) - 1)) :
-                plt.figure()
+                plt.plot(psd_result)
+                plt.title(key)
+                if key is not T8: plt.figure()
 
         plt.show()
+        # data[:] = [doCentering(val) for val in data]
+        # data[:] = [doFiltering(val, 6, 30, 129, 10) for val in data]
+        # data[:] = [createFFT(val) for val in data]
+        # data[:] = [createPSD(val, 129) for val in data]
+
+        # for key, val in enumerate(data):
+        #     plt.plot(val)
+        #     if (key < (len(data) - 1)) :
+        #         plt.figure()
+        #
+        # plt.show()
