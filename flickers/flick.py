@@ -1,7 +1,5 @@
 from pygame.locals import *
-# from threading import Thread
-
-import pygame, sys, threading, time, os
+import pygame, threading, os, sys
 
 pygame.init()
 info        = pygame.display.Info()
