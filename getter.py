@@ -2,7 +2,7 @@ from emokit.emotiv import Emotiv
 from datetime import datetime
 from preprocess import *
 
-import os, sys, errno, platform
+import os, sys, time, errno, platform
 import matplotlib.pyplot as plt
 
 if platform.system() == "Windows":
@@ -103,6 +103,7 @@ if __name__ == "__main__":
         headset.close()
         os.system('clear')
 
+        start_time  = time.time()
         for key, val in sorted(data.iteritems()):
             if key is not 'second' and key is not 'counter' :
                 centered    = doCentering(val)
@@ -110,10 +111,13 @@ if __name__ == "__main__":
                 fft_result  = createFFT(filtered)
                 psd_result  = createPSD(fft_result, sampling_rate)
 
-                plt.plot(psd_result)
+                plt.plot(centered)
                 plt.title(key)
-                if key is not T8: plt.figure()
+                if key is not 'T8': plt.figure()
 
+        elapsed_time = time.time() - start_time
+        print 'elapsed = %.3f s' % (elapsed_time)
+        
         plt.show()
         # data[:] = [doCentering(val) for val in data]
         # data[:] = [doFiltering(val, 6, 30, 129, 10) for val in data]
