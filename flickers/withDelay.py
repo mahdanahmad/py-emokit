@@ -1,4 +1,4 @@
-import pygame, sys, thread, time
+import pygame, sys, thread, time, os
 from pygame.locals import *
 
 pygame.init()
@@ -14,7 +14,7 @@ screen      = pygame.display.set_mode(display, pygame.FULLSCREEN)
 try :
     fps     = int(sys.argv[1])
 except:
-    fps     = 15
+    fps     = 10
 
 try :
     delay   = int(sys.argv[2])
@@ -32,6 +32,10 @@ clr_default = clr_white
 def_side    = height / 4
 
 screen.fill(clr_black)
+
+img_loc     = os.path.join("images", "circle-stop.png")
+img         = pygame.image.load(img_loc)
+img         = pygame.transform.scale(img, (def_side, def_side))
 
 class Rectangle(pygame.Rect):
     def __init__(self, fps) :
@@ -82,6 +86,8 @@ class Rectangle(pygame.Rect):
             self.count      = 0
             self.periode    = 0
 
+
+        self.rect.blit(img, (0, 0))
         self.rect.set_alpha(self.alpha)
         screen.blit(self.rect, ((width - def_side) / 2, (height - def_side) / 2))
 
