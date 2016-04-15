@@ -75,6 +75,7 @@ class Env():
     def getRun(self)                : return self.__run
     def getStop(self)               : return self.__stop
     def getResolution(self)         : return self.__resolution
+    def getRectSize(self)           : return (self.__side, self.__side)
 
     def getIMG(self, state=None)        :
         return {
@@ -102,7 +103,7 @@ class Env():
             'blue'          : self.__clr_blue
         }.get(state, self.__clr_white)
 
-    def getPosition(self, state=None)   :
+    def getRectPos(self, state=None)    :
         return {
             'stop'          : self.__pos_stop,
             'left'          : self.__pos_left,

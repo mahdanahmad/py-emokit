@@ -14,6 +14,15 @@ clr_default = env.getColor('white')
 
 screen.fill(clr_back)
 
+avail_state = ['stop', 'left', 'right', 'forward']
+
+def drawRectangle(pos, img) :
+    surface = pygame.Surface(env.getRectSize())
+    surface.fill(clr_default)
+    surface.blit(img, (0, 0))
+
+    screen.blit(surface, pos)
+
 def eventLoop() :
     for event in pygame.event.get():
         if event.type == QUIT :
@@ -25,6 +34,10 @@ def eventLoop() :
                 sys.exit()
 
 def run() :
+    for val in avail_state : drawRectangle(env.getRectPos(val), env.getIMG(val))
+
+    pygame.display.flip()
+
     while True :
         eventLoop()
         clock.tick(env.getFPS())
