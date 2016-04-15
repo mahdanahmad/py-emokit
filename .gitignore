@@ -7,3 +7,4 @@ emokit.egg-info
 env.pyc
 preprocess.pyc
 stimulus/env.pyc
+stimulus/rectangle.pyc
