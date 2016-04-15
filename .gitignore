@@ -5,5 +5,5 @@ emotiv.pyc
 dist
 emokit.egg-info
 env.pyc
-stimulus/env.pyc
 preprocess.pyc
+stimulus/env.pyc
