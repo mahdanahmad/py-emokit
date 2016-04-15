@@ -1,73 +1,42 @@
+from env import Env
 from pygame.locals import *
+
 import pygame, threading, os, sys
 
 pygame.init()
 info        = pygame.display.Info()
 clock       = pygame.time.Clock()
+env         = Env(info.current_w, info.current_h)
 
-width       = info.current_w
-height      = info.current_h
+screen      = pygame.display.set_mode(env.getResolution(), pygame.FULLSCREEN)
+clr_back    = env.getColor('black')
+clr_default = env.getColor('white')
 
-display     = (width, height)
-screen      = pygame.display.set_mode(display, pygame.FULLSCREEN)
-
-clr_white   = (255, 255, 255)
-clr_black   = (0, 0, 0)
-clr_red     = (255, 0, 0)
-clr_green   = (0, 255, 0)
-clr_blue    = (0, 0, 255)
-
-clr_back    = clr_black
-clr_default = clr_white
-
-def_side    = height / 4
-
-forwardX    = (width / 4) * 2 - (def_side / 2)
-forwardY    = (height / 4) * 1 - (def_side / 2)
-forwardFPS  = 9
-forwardIMG  = pygame.transform.scale(pygame.image.load(os.path.join("images", "arrow-forward.png")), (def_side, def_side))
-
-stopX       = (width / 4) * 2 - (def_side / 2)
-stopY       = (height / 4) * 3 - (def_side / 2)
-stopFPS     = 10
-stopIMG     = pygame.transform.scale(pygame.image.load(os.path.join("images", "circle-stop.png")), (def_side, def_side))
-
-rightX      = (width / 4) * 3 - (def_side / 2)
-rightY      = (height / 4) * 3 - (def_side / 2)
-rightFPS    = 11
-rightIMG    = pygame.transform.scale(pygame.image.load(os.path.join("images", "arrow-right.png")), (def_side, def_side))
-
-leftX       = (width / 4) * 1 - (def_side / 2)
-leftY       = (height / 4) * 3 - (def_side / 2)
-leftFPS     = 12
-leftIMG     = pygame.transform.scale(pygame.image.load(os.path.join("images", "arrow-left.png")), (def_side, def_side))
-
-global_fps  = 60
-global_run  = True
-global_stop = False
 global_lock = threading.Lock()
 
 screen.fill(clr_back)
 
+avail_state = ['stop', 'left', 'right', 'forward']
+
 class Rectangle(threading.Thread):
-    def __init__(self, name='Unnamed', freq=10, posX=0, posY=0, img=None) :
+    def __init__(self, freq, pos, img, name='Unnamed', ) :
         threading.Thread.__init__(self)
         self.clock      = pygame.time.Clock()
-        self.surface    = pygame.Surface((def_side, def_side))
+        self.surface    = pygame.Surface(env.getRectSize())
         self.up         = 0
         self.name       = name
         self.image      = img
         self.delay      = 1000 / (freq * 2)
 
-        self.pos        = (posX, posY)
-        self.rect       = (posX, posY, def_side, def_side)
+        self.pos        = pos
+        self.rect       = pos + env.getRectSize()
 
         # print self.delay
         # self.count      = 0
         # self.init_tick  = pygame.time.get_ticks()
     def run(self) :
         while True :
-            if global_stop :
+            if env.getStop() :
                 return
             else :
                 self.loop()
@@ -75,7 +44,7 @@ class Rectangle(threading.Thread):
     def loop(self) :
         self.clock.tick()
 
-        if (global_run) :
+        if (env.getRun()) :
             if (self.up) :
                 self.up  = 0
                 self.surface.fill(clr_default)
@@ -104,40 +73,27 @@ class Rectangle(threading.Thread):
         pygame.time.wait(self.delay)
 
 def eventLoop() :
-    global global_run
-    global global_stop
-
     for event in pygame.event.get():
         if event.type == QUIT :
-            global_stop = True
-
+            env.killStop()
             pygame.quit()
             sys.exit()
         elif event.type == KEYDOWN :
             if event.key == K_ESCAPE :
-                global_stop = True
-
+                env.killStop()
                 pygame.quit()
                 sys.exit()
             if event.key == K_SPACE :
-                global_run = not global_run
+                env.changeRun()
 
 def run() :
-    forward = Rectangle('forward', forwardFPS, forwardX, forwardY, forwardIMG)
-    forward.start()
-
-    stop    = Rectangle('stop', stopFPS, stopX, stopY, stopIMG)
-    stop.start()
-
-    right   = Rectangle('right', rightFPS, rightX, rightY, rightIMG)
-    right.start()
-
-    left    = Rectangle('left', leftFPS, leftX, leftY, leftIMG)
-    left.start()
+    for val in avail_state :
+        rect    = Rectangle(env.getRectFreq(val), env.getRectPos(val), env.getRectIMG(val), val)
+        rect.start()
 
     while True :
         eventLoop()
-        clock.tick(global_fps)
+        clock.tick(env.getFPS())
 
 if __name__ == "__main__":
     run()

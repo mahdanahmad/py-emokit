@@ -34,7 +34,7 @@ def eventLoop() :
                 sys.exit()
 
 def run() :
-    for val in avail_state : drawRectangle(env.getRectPos(val), env.getIMG(val))
+    for val in avail_state : drawRectangle(env.getRectPos(val), env.getRectIMG(val))
 
     pygame.display.flip()
 

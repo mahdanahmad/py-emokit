@@ -5,8 +5,8 @@ import pygame, os
  # Editable Configuration
  #
 
-fps             = {
-    'global'    : 60,
+fps             = 60
+frequency       = {
     'forward'   : 9,
     'stop'      : 10,
     'right'     : 11,
@@ -53,11 +53,11 @@ class Env():
         self.__run          = True
         self.__stop         = False
 
-        self.__fps          = fps['global']
-        self.__fps_forward  = fps['forward']
-        self.__fps_stop     = fps['stop']
-        self.__fps_right    = fps['right']
-        self.__fps_left     = fps['left']
+        self.__fps          = fps
+        self.__frq_forward  = frequency['forward']
+        self.__frq_stop     = frequency['stop']
+        self.__frq_right    = frequency['right']
+        self.__frq_left     = frequency['left']
 
         self.__img_stop     = self.__setImage('stop')
         self.__img_left     = self.__setImage('left')
@@ -72,12 +72,22 @@ class Env():
     def killStop(self)      : self.__stop = True
     def changeRun(self)     : self.__run  = not self.__run
 
-    def getRun(self)                : return self.__run
-    def getStop(self)               : return self.__stop
-    def getResolution(self)         : return self.__resolution
-    def getRectSize(self)           : return (self.__side, self.__side)
+    def getFPS(self)        : return self.__fps
+    def getRun(self)        : return self.__run
+    def getStop(self)       : return self.__stop
+    def getResolution(self) : return self.__resolution
+    def getRectSize(self)   : return (self.__side, self.__side)
 
-    def getIMG(self, state=None)        :
+    def getColor(self, state=None)      :
+        return {
+        'white'         : self.__clr_white,
+        'black'         : self.__clr_black,
+        'red'           : self.__clr_red,
+        'green'         : self.__clr_green,
+        'blue'          : self.__clr_blue
+        }.get(state, self.__clr_white)
+
+    def getRectIMG(self, state=None)    :
         return {
             'stop'          : self.__img_stop,
             'left'          : self.__img_left,
@@ -85,23 +95,13 @@ class Env():
             'forward'       : self.__img_forward
         }.get(state, self.__img_stop)
 
-    def getFPS(self, state=None)        :
+    def getRectFreq(self, state=None)    :
         return {
-            'global'        :self.__fps,
-            'left'          :self.__fps_left,
-            'stop'          :self.__fps_stop,
-            'right'         :self.__fps_right,
-            'forward'       :self.__fps_forward
-        }.get(state, self.__fps)
-
-    def getColor(self, state=None)      :
-        return {
-            'white'         : self.__clr_white,
-            'black'         : self.__clr_black,
-            'red'           : self.__clr_red,
-            'green'         : self.__clr_green,
-            'blue'          : self.__clr_blue
-        }.get(state, self.__clr_white)
+            'stop'          :self.__frq_stop,
+            'left'          :self.__frq_left,
+            'right'         :self.__frq_right,
+            'forward'       :self.__frq_forward
+        }.get(state, self.__frq_stop)
 
     def getRectPos(self, state=None)    :
         return {
