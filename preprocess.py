@@ -42,3 +42,6 @@ def createPSD(data, fs = 128) :
         total += np.array(temp[idx])[:length:]
 
     return total / periode
+
+def countPower(data) :
+    return np.sum(np.square(data))

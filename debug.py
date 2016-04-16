@@ -27,31 +27,33 @@ def readFromFile(filename) :
 
         return np.array(result)
 
+def pullData(data) :
+    pass
+
 def run() :
     start_time  = time.time()
 
-    # print source
 
 
-    single_data = readFromFile(source)
+    # single_data = readFromFile(source)
 
-    data        = []
-    occipital   = []
+    # data        = []
+    # occipital   = []
     # data        = single_data
-    for i in range(2, 16)   : data.append(single_data[:,i])
-    for i in range(8, 10)   : occipital.append(single_data[:,i])
+    # for i in range(2, 16)   : data.append(single_data[:,i])
+    # for i in range(8, 10)   : occipital.append(single_data[:,i])
 
-    data[:]         = [doCentering(val) for val in data]
+    # data[:]         = [doCentering(val) for val in data]
     # data[:]         = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in data]
     # data[:]         = [createFFT(val) for val in data]
     # data[:]         = [createPSD(val, sampling_rate) for val in data]
 
-    for key, val in enumerate(data):
-        plt.plot(val)
-        plt.title(header[key] + str(key + 1))
-        if (key < len(data) - 1) : plt.figure()
-
-    plt.show()
+    # for key, val in enumerate(data):
+    #     plt.plot(val)
+    #     plt.title(header[key] + str(key + 1))
+    #     if (key < len(data) - 1) : plt.figure()
+    #
+    # plt.show()
 
     # occipital[:]    = [doCentering(val) for val in occipital]
     # occipital[:]    = [doFiltering(val, low_limit, high_limit, sampling_rate, 10) for val in occipital]
