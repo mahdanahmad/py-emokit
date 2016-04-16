@@ -45,3 +45,6 @@ def createPSD(data, fs = 128) :
 
 def countPower(data) :
     return np.sum(np.square(data))
+
+def countPercentageDifferent(newValue, oldValue):
+    return (newValue - oldValue) * 100 / oldValue
