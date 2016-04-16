@@ -45,13 +45,13 @@ def run() :
     # idx         = randint(2,16)
     idx         = 2
 
-    # start       = 0
-    start       = 234
+    start       = 0
+    # start       = 234
 
-    # stop        = len(data[:,0])
-    stop        = 331
+    stop        = len(data[:,0])
+    # stop        = 331
 
-    single      = data[start:stop,idx]
+    single      = moveToAxis(data[start:stop,idx])
 
     window      = 6
     parsed      = parse(single, window)
@@ -59,13 +59,10 @@ def run() :
     windowedPower       = []
     for val in parsed   : windowedPower.append(countPower(val))
 
-    percentageDifferent = []
-    for key, val in enumerate(windowedPower) :
-        if key is not 0 :
-            percentageDifferent.append(countPercentageDifferent(val, windowedPower[key - 1]))
+    percentageDifferent = np.diff(windowedPower)
 
     for key, val in enumerate(percentageDifferent) :
-        print str(key) + ' => ' + str((key + 2) * window)])
+        print str(key) + ' => ' + str((key + 2) * window)
 
     plt.plot(single)
     plt.figure()

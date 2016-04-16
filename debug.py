@@ -27,50 +27,8 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def parse(data, count) :
-    reminder    = data
-    result      = []
-
-    while len(reminder) > count:
-        result.append(reminder[0:count])
-        reminder    = reminder[count:]
-
-    return result
-
 def run() :
     start_time  = time.time()
-
-    data        = readFromFile(source)
-
-    # idx         = randint(2,16)
-    idx         = 2
-
-    # start       = 0
-    start       = 234
-
-    # stop        = len(data[:,0])
-    stop        = 331
-
-    single      = data[start:stop,idx]
-
-    window      = 6
-    parsed      = parse(single, window)
-
-    windowedPower       = []
-    for val in parsed   : windowedPower.append(countPower(val))
-
-    percentageDifferent = []
-    for key, val in enumerate(windowedPower) :
-        if key is not 0 :
-            percentageDifferent.append(countPercentageDifferent(val, windowedPower[key - 1]))
-
-    for key, val in enumerate(percentageDifferent) :
-        print str(key) + ' => ' + str((key + 2) * window)])
-
-    plt.plot(single)
-    plt.figure()
-    plt.plot(percentageDifferent)
-    plt.show()
 
     elapsed_time = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
