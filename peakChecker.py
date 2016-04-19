@@ -4,12 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from env import *
-from random import randint
 from datetime import datetime
 from preprocess import *
 
 low_limit       = 5
 high_limit      = 20
+split_amount    = 6
 sampling_rate   = 129
 
 header          = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
@@ -27,51 +27,21 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def parse(data, count) :
-    reminder    = data
-    result      = []
-
-    while len(reminder) > count:
-        result.append(reminder[0:count])
-        reminder    = reminder[count:]
-
-    return result
-
 def run() :
-    start_time  = time.time()
+    data    = readFromFile(source)
 
-    data        = readFromFile(source)
+    channel = []
+    for i in range(2, 16)   :
+        current = moveToAxis(data[:,i])
+        parsed  = parse(current, split_amount)
+        power   = countAllPower(parsed)
+        diff    = findDifference(power)
 
-    # idx         = randint(2,16)
-    idx         = 2
+        plt.plot(diff)
+        plt.title(header[i - 2])
+        if (i is not 15) : plt.figure()
 
-    start       = 0
-    # start       = 234
-
-    stop        = len(data[:,0])
-    # stop        = 331
-
-    single      = moveToAxis(data[start:stop,idx])
-
-    window      = 6
-    parsed      = parse(single, window)
-
-    windowedPower       = []
-    for val in parsed   : windowedPower.append(countPower(val))
-
-    percentageDifferent = np.diff(windowedPower)
-
-    for key, val in enumerate(percentageDifferent) :
-        print str(key) + ' => ' + str((key + 2) * window)
-
-    plt.plot(single)
-    plt.figure()
-    plt.plot(percentageDifferent)
     plt.show()
-
-    elapsed_time = time.time() - start_time
-    print 'elapsed = %.3f s' % (elapsed_time)
-
+    
 if __name__ == "__main__":
     run()
-    # print env_serial\

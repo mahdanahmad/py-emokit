@@ -43,10 +43,37 @@ def createPSD(data, fs = 128) :
 
     return total / periode
 
-def countPower(data) :
-    return np.sum(np.square(data))
-
 def moveToAxis(data) :
     data        = np.array(data)
 
     return data - data.min()
+
+def parse(data, split_amount) :
+    reminder    = data
+    result      = []
+
+    while len(reminder) > split_amount:
+        result.append(reminder[0:split_amount])
+        reminder    = reminder[split_amount:]
+
+    return result
+
+def countPower(data) :
+    return np.sum(np.square(data))
+
+def countAllPower(data) :
+    result  = []
+    for val in data : result.append(countPower(val))
+
+    return result
+
+def countPercentageDifferent(newValue, oldValue) :
+    return (newValue - oldValue) * 100 / oldValue
+
+def findDifference(data) :
+    result  = []
+    for key, val in enumerate(data) :
+        if (key is not 0) :
+            result.append(countPercentageDifferent(val, data[key - 1]))
+
+    return result
