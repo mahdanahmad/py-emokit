@@ -27,6 +27,7 @@ position        = {         # based on grid
     'stop'      : (2, 3),
     'left'      : (1, 3),
     'right'     : (3, 3),
+    'middle'    : (2, 2),
     'forward'   : (2, 1)
 }
 
@@ -67,6 +68,7 @@ class Env():
         self.__pos_stop     = self.__setRectPosition(grid, position['stop'])
         self.__pos_left     = self.__setRectPosition(grid, position['left'])
         self.__pos_right    = self.__setRectPosition(grid, position['right'])
+        self.__pos_middle   = self.__setRectPosition(grid, position['middle'])
         self.__pos_forward  = self.__setRectPosition(grid, position['forward'])
 
     def killStop(self)      : self.__stop = True
@@ -80,11 +82,11 @@ class Env():
 
     def getColor(self, state=None)      :
         return {
-        'white'         : self.__clr_white,
-        'black'         : self.__clr_black,
-        'red'           : self.__clr_red,
-        'green'         : self.__clr_green,
-        'blue'          : self.__clr_blue
+            'white'         : self.__clr_white,
+            'black'         : self.__clr_black,
+            'red'           : self.__clr_red,
+            'green'         : self.__clr_green,
+            'blue'          : self.__clr_blue
         }.get(state, self.__clr_white)
 
     def getRectIMG(self, state=None)    :
@@ -108,8 +110,9 @@ class Env():
             'stop'          : self.__pos_stop,
             'left'          : self.__pos_left,
             'right'         : self.__pos_right,
-            'forward'       : self.__pos_forward
-        }.get(state, self.__pos_stop)
+            'middle'        : self.__pos_middle,
+            'forward'       : self.__pos_forward,
+        }.get(state, self.__pos_middle)
 
     def __setImage(self, state) :
         fullpath            = os.path.join(images_folder, filename[state])
