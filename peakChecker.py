@@ -32,16 +32,17 @@ def run() :
 
     channel = []
     for i in range(2, 16)   :
-        current = moveToAxis(data[:,i])
-        parsed  = parse(current, split_amount)
-        power   = countAllPower(parsed)
-        diff    = findDifference(power)
+        current     = moveToAxis(data[:,i])
+        filtered    = doFiltering(current, 0, 8, 129)
+        parsed      = parse(current, split_amount)
+        power       = countAllPower(parsed)
+        diff        = findDifference(power)
 
         plt.plot(diff)
         plt.title(header[i - 2])
         if (i is not 15) : plt.figure()
 
     plt.show()
-    
+
 if __name__ == "__main__":
     run()
