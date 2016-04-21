@@ -5,12 +5,12 @@ import pygame, threading, sys, random
 
 try :
     delay   = float(sys.argv[1])
-except:
+except :
     delay   = 3
 
 try :
     still   = float(sys.argv[2])
-except:
+except :
     still   = 0.1
 
 pygame.init()
@@ -25,13 +25,17 @@ clr_default = env.getColor('white')
 screen.fill(clr_back)
 pygame.display.update()
 
-avail_state = ['stop', 'left', 'right', 'forward']
-
 position    = env.getRectPos()
 updatable   = position + env.getRectSize()
 
 run         = True
 fps         = 10
+
+avail_state = ['stop', 'left', 'right', 'forward']
+try :
+    image   = env.getRectIMG(sys.argv[3])
+except :
+    image   = env.getRectIMG(random.choice(avail_state))
 
 def coverBack() :
     surface = pygame.Surface(env.getRectSize())
@@ -60,7 +64,7 @@ def eventLoop() :
                 run = not run
 
 def run() :
-    image       = env.getRectIMG(random.choice(avail_state))
+    # image       = env.getRectIMG(random.choice(avail_state))
     counter     = 0
     show_image  = 0
 
@@ -73,7 +77,7 @@ def run() :
             if (show_image) :
                 drawRectangle(image)
                 if (counter == (still * fps)) :
-                    image       = env.getRectIMG(random.choice(avail_state))
+                    # image       = env.getRectIMG(random.choice(avail_state))
                     counter     = 0
                     show_image  = 0
             else :
