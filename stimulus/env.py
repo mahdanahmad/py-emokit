@@ -15,10 +15,13 @@ frequency       = {
 
 images_folder   = 'images'
 filename        = {
-    'stop'      : 'circle-stop.png',
-    'left'      : 'arrow-left.png',
-    'right'     : 'arrow-right.png',
-    'forward'   : 'arrow-forward.png'
+    'stop'          : 'circle-stop.png',
+    'left'          : 'arrow-left.png',
+    'right'         : 'arrow-right.png',
+    'forward'       : 'arrow-forward.png',
+    'fill_left'     : 'fill-left.png',
+    'fill_right'    : 'fill-right.png',
+    'fill_forward'  : 'fill-forward.png',
 }
 
 side_divider    = 4
@@ -64,6 +67,9 @@ class Env():
         self.__img_left     = self.__setImage('left')
         self.__img_right    = self.__setImage('right')
         self.__img_forward  = self.__setImage('forward')
+        self.__fill_left    = self.__setImage('fill_left')
+        self.__fill_right   = self.__setImage('fill_right')
+        self.__fill_forward = self.__setImage('fill_forward')
 
         self.__pos_stop     = self.__setRectPosition(grid, position['stop'])
         self.__pos_left     = self.__setRectPosition(grid, position['left'])
@@ -94,7 +100,10 @@ class Env():
             'stop'          : self.__img_stop,
             'left'          : self.__img_left,
             'right'         : self.__img_right,
-            'forward'       : self.__img_forward
+            'forward'       : self.__img_forward,
+            'fill_left'     : self.__fill_left,
+            'fill_right'    : self.__fill_right,
+            'fill_forward'  : self.__fill_forward
         }.get(state, self.__img_stop)
 
     def getRectFreq(self, state=None)    :
