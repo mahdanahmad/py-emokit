@@ -23,12 +23,26 @@ def readFromFile(filename) :
     with open(filename) as afile :
         result = []
         for line in afile :
-            result.append(map(int, line.split(',')))
+            # print line.split(',')
+            result.append(map(int, line.split(',')[1::1]))
+
+        return np.array(result)
+
+def loadStimulus()  :
+    with open('data/stimulus_out.csv') as afile :
+        result  = []
+        for line in afile :
+            result.append(float(line))
 
         return np.array(result)
 
 def run() :
-    start_time  = time.time()
+    start_time      = time.time()
+    stimulus_out    = loadStimulus()
+
+    data            = readFromFile(source)
+
+    print(data[1])
 
     elapsed_time = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
