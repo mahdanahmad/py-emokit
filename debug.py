@@ -24,7 +24,8 @@ def readFromFile(filename) :
         result = []
         for line in afile :
             # print line.split(',')
-            result.append(map(int, line.split(',')[1::1]))
+            splittedLine    = line.split(',')
+            result.append([float(splittedLine[0])] +  map(int, splittedLine[1::1]))
 
         return np.array(result)
 
@@ -42,7 +43,24 @@ def run() :
 
     data            = readFromFile(source)
 
-    print(data[1])
+    single          = moveToAxis(data[:,6])
+    # single          = (data[:,6])
+    timestamp       = data[:,0]
+    filtered        = doFiltering(single, 0, 8, 129)
+
+    height          = single.max()
+
+    timeline        = []
+    for val in timestamp:
+        if (val in stimulus_out) :
+            timeline.append(height)
+        else :
+            timeline.append(0)
+
+    plt.plot(single)
+    plt.figure()
+    plt.plot(timeline, 'r--')
+    plt.show()
 
     elapsed_time = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)

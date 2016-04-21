@@ -77,3 +77,11 @@ def findDifference(data) :
             result.append(countPercentageDifferent(val, data[key - 1]))
 
     return result
+
+def chainSSVEP(data, fs, lowcut, highcut) :
+    result  = doCentering(data)
+    result  = doFiltering(result, lowcut, highcut, fs)
+    result  = createFFT(result)
+    result  = createPSD(result, fs)
+
+    return result
