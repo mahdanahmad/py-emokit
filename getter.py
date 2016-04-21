@@ -30,7 +30,7 @@ if __name__ == "__main__":
     gevent.sleep(0)
 
     folder      = 'data/' + datetime.now().strftime('%Y%m%d') + '/'
-    filename    = datetime.now().strftime('%H%M%S') + "_" + name + "_" + str(time) + ".csv"
+    filename    = datetime.now().strftime('%H%M%S') + "_" + name + "_" + str(maxtime) + ".csv"
 
     fullpath    = os.path.join(folder, filename)
 
