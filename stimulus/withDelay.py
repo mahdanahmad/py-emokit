@@ -1,7 +1,7 @@
 from env import Env
 from pygame.locals import *
 
-import pygame, threading, sys, random
+import os, sys, time, random, pygame, threading
 
 try :
     delay   = float(sys.argv[1])
@@ -31,9 +31,11 @@ updatable   = position + env.getRectSize()
 run         = True
 fps         = 10
 
-avail_state = ['stop', 'left', 'right', 'forward']
+avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
 try :
-    image   = env.getRectIMG(sys.argv[3])
+    choosen = sys.argv[3]
+    if (choosen is not 'stop') : choosen = 'fill_' + choosen
+    image   = env.getRectIMG(choosen)
 except :
     image   = env.getRectIMG(random.choice(avail_state))
 
@@ -68,6 +70,17 @@ def run() :
     counter     = 0
     show_image  = 0
 
+    fullpath    = os.path.join('data', 'stimulus_out.csv')
+
+    if not os.path.exists(os.path.dirname(fullpath)):
+        try:
+            os.makedirs(os.path.dirname(fullpath))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+
+    output      = open(fullpath, 'a')
+
     while True :
         eventLoop()
         clock.tick(fps)
@@ -75,11 +88,13 @@ def run() :
         counter += 1
         if (run) :
             if (show_image) :
+                output.write("%s\n" % (time.time()))
                 drawRectangle(image)
                 if (counter == (still * fps)) :
                     # image       = env.getRectIMG(random.choice(avail_state))
                     counter     = 0
                     show_image  = 0
+
             else :
                 coverBack()
                 if (counter == ((delay - still) * fps)) :

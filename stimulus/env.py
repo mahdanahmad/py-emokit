@@ -100,10 +100,10 @@ class Env():
             'stop'          : self.__img_stop,
             'left'          : self.__img_left,
             'right'         : self.__img_right,
-            'forward'       : self.__img_forward
-            'fill_left'     : self.__img_left,
-            'fill_right'    : self.__img_right,
-            'fill_forward'  : self.__img_forward
+            'forward'       : self.__img_forward,
+            'fill_left'     : self.__fill_left,
+            'fill_right'    : self.__fill_right,
+            'fill_forward'  : self.__fill_forward
         }.get(state, self.__img_stop)
 
     def getRectFreq(self, state=None)    :

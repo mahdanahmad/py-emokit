@@ -20,9 +20,9 @@ if __name__ == "__main__":
     except:
         name    = 'unnamed'
     try :
-        time    = int(sys.argv[2])
+        maxtime = int(sys.argv[2])
     except:
-        time    = 10
+        maxtime = 10
 
     # headset = Emotiv(display_output=False)
     headset     = Emotiv()
@@ -66,11 +66,11 @@ if __name__ == "__main__":
     second      = 0
     first       = -1
     try:
-        while ( second < time ):
+        while ( second < maxtime ):
             packet = headset.dequeue()
-            output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (second, packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
+            output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time.time(), packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
 
-            data['second'].append(second)
+            data['second'].append(time.time())
             data['counter'].append(packet.counter)
             data['F3'].append(packet.F3[0])
             data['FC5'].append(packet.FC5[0])
