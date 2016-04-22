@@ -49,17 +49,16 @@ def run() :
     filtered        = doFiltering(single, 0, 8, 129)
 
     height          = single.max()
-
+    x               = np.arange(len(single))
     timeline        = []
     for val in timestamp:
         if (val in stimulus_out) :
+            print val
             timeline.append(height)
         else :
             timeline.append(0)
 
-    plt.plot(single)
-    plt.figure()
-    plt.plot(timeline, 'r--')
+    plt.plot(x, single, 'b', x, timeline, 'r--')
     plt.show()
 
     elapsed_time = time.time() - start_time
