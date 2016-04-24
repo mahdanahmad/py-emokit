@@ -23,14 +23,28 @@ def readFromFile(filename) :
     with open(filename) as afile :
         result = []
         for line in afile :
-            result.append(map(int, line.split(',')))
+            splittedLine    = line.split(',')
+            result.append([float(splittedLine[0])] +  map(int, splittedLine[1::1]))
+
+        return np.array(result)
+
+def loadStimulus()  :
+    with open('data/stimulus_out.csv') as afile :
+        result  = []
+        for line in afile :
+            result.append(float(line))
 
         return np.array(result)
 
 def run() :
-    data    = readFromFile(source)
+    data            = readFromFile(source)
+    timestamp       = data[:,0]
+    stimulus_out    = loadStimulus()
 
-    channel = []
+    stimulus        = findStimulus(timestamp, stimulus_out, split_amount)
+
+    channel         = []
+    unprocessed     = []
     for i in range(2, 16)   :
         current     = moveToAxis(data[:,i])
         filtered    = doFiltering(current, 0, 8, 129)
@@ -38,9 +52,12 @@ def run() :
         power       = countAllPower(parsed)
         diff        = findDifference(power)
 
+        channel.append(diff)
+        unprocessed.append(current)
+
         plt.plot(diff)
-        plt.title(header[i - 2])
-        if (i is not 15) : plt.figure()
+        for val in stimulus : plt.axvline(x=val, color='r', ls='--')
+        if (i < 15) : plt.figure()
 
     plt.show()
 

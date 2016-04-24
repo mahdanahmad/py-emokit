@@ -78,6 +78,19 @@ def findDifference(data) :
 
     return result
 
+def findStimulus(timeData, timeStimulus, parsed=0) :
+    result      = []
+
+    if (parsed > 0) :
+        temp    = parse(timeData, parsed)
+        for key, val in enumerate(temp[1:]) :
+            if (True in np.in1d(timeStimulus, val)) : result.append(key)
+    else :
+        for key, val in enumerate(timeData) :
+            if (val in timeStimulus) : result.append(key)
+
+    return result
+
 def chainSSVEP(data, fs, lowcut, highcut) :
     result  = doCentering(data)
     result  = doFiltering(result, lowcut, highcut, fs)
