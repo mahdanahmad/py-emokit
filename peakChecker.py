@@ -61,8 +61,17 @@ def run() :
         unprocessed.append(current)
 
         plt.plot(diff)
+        plt.title(header[i-2])
         for val in stimulus : plt.axvline(x=val, color='r', ls='--')
         if (i < 15) : plt.figure()
+
+    # selected        = 2
+    #
+    # plt.plot(unprocessed[selected])
+    # for val in findStimulus(timestamp, stimulus_out) : plt.axvline(x=val, color='r', ls='--')
+    # plt.figure()
+    # plt.plot(channel[selected])
+    # for val in stimulus : plt.axvline(x=val, color='r', ls='--')
 
     plt.show()
 

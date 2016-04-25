@@ -48,6 +48,16 @@ def moveToAxis(data) :
 
     return data - data.min()
 
+def normalization(data) :
+    data        = np.array(data)
+
+    minus_idx   = data < 0
+    if (len(data[minus_idx]) > 0) :
+        data = data - data[minus_idx].mean()
+        data[data < 0]  = 0
+
+    return data;
+
 def parse(data, split_amount) :
     reminder    = data
     result      = []
