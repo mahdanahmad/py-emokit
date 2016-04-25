@@ -19,6 +19,11 @@ try :
 except:
     source      = 'data/10-stop'
 
+try :
+    balancer    = float(sys.argv[2])
+except:
+    balancer    = 0
+
 def readFromFile(filename) :
     with open(filename) as afile :
         result = []
@@ -28,18 +33,18 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def loadStimulus()  :
+def loadStimulus(difference=0)  :
     with open('data/stimulus_out.csv') as afile :
         result  = []
         for line in afile :
-            result.append(float(line))
+            result.append(float(line) + difference)
 
         return np.array(result)
 
 def run() :
     data            = readFromFile(source)
     timestamp       = data[:,0]
-    stimulus_out    = loadStimulus()
+    stimulus_out    = loadStimulus(balancer)
 
     stimulus        = findStimulus(timestamp, stimulus_out, split_amount)
 

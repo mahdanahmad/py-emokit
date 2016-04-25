@@ -29,43 +29,19 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def loadStimulus()  :
+def loadStimulus(diff=0)  :
     with open('data/stimulus_out.csv') as afile :
         result  = []
         for line in afile :
-            result.append(float(line))
+            result.append(float(line) + diff)
 
         return np.array(result)
 
 def run() :
     start_time      = time.time()
-    stimulus_out    = loadStimulus()
+    stimulus_out    = loadStimulus(4.0)
 
-    data            = readFromFile(source)
-
-    single          = moveToAxis(data[:,6])
-    # single          = (data[:,6])
-
-    allLine         = []
-    for i in range(2, 16) : allLine.append(moveToAxis(data[:,i]))
-
-    timestamp       = data[:,0]
-    filtered        = doFiltering(single, 0, 8, 129)
-
-    # height          = single.max()
-    # x               = np.arange(len(single))
-    # timeline        = []
-    # for val in timestamp:
-    #     if (val in stimulus_out) :
-    #         print val
-    #         timeline.append(height)
-    #     else :
-    #         timeline.append(0)
-    #
-    # plt.plot(x, single, 'b', x, timeline, 'r--')
-    # plt.show()
-    # drawnWithStimulus(single, timestamp, stimulus_out)
-    drawnAllWithStimulus(allLine, timestamp, stimulus_out)
+    for val in stimulus_out: print "%.2f" % val
 
     elapsed_time = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
