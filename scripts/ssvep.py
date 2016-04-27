@@ -1,11 +1,9 @@
-import sys
+import os, sys
 import time
 import numpy as np
 import matplotlib.pyplot as plt
 
-from env import *
-from random import randint
-from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
 low_limit       = 5
@@ -62,7 +60,7 @@ def run() :
     psd_O1      = createPSD(fft_O1, sampling_rate)
     psd_O2      = createPSD(fft_O2, sampling_rate)
 
-    
+
 
     # plt.plot(psd_O2)
     # plt.title('PSD Result')

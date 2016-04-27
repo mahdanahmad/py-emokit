@@ -1,10 +1,8 @@
-import sys
-import time
+import os, sys, time
 import numpy as np
 import matplotlib.pyplot as plt
 
-from env import *
-from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
 low_limit       = 5

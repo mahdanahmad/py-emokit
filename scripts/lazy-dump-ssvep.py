@@ -1,12 +1,7 @@
-import os
-import sys
-import time
+import os, sys
 import numpy as np
-import matplotlib.pyplot as plt
 
-from env import *
-from random import randint
-from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
 low_limit       = 5
@@ -26,7 +21,7 @@ def readFromFile(filename) :
         return np.array(result)
 
 def run() :
-    fullpath    = os.path.join('result', 'dump.csv')
+    fullpath    = os.path.join('result', 'dump_ssvep.csv')
 
     if not os.path.exists(os.path.dirname(fullpath)):
         try:

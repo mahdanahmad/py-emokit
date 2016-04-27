@@ -1,6 +1,9 @@
-from preprocess import *
+import os, sys
 import scipy.signal as signal
 import matplotlib.pyplot as plt
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from preprocess import *
 
 b, a = createButterBandpass(5, 15, 129, 10)
 

@@ -1,10 +1,8 @@
-import sys
-import time
+import os sys, time
 import numpy as np
 import matplotlib.pyplot as plt
 
-from env import *
-from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
 low_limit       = 5
@@ -52,7 +50,7 @@ def run() :
     unprocessed     = []
     for i in range(2, 16)   :
         current     = moveToAxis(data[:,i])
-        filtered    = doFiltering(current, 0, 8, 129)
+        # filtered    = doFiltering(current, 0, 8, 129)
         parsed      = parse(current, split_amount)
         power       = countAllPower(parsed)
         diff        = findDifference(power)
