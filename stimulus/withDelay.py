@@ -4,12 +4,12 @@ from pygame.locals import *
 import os, sys, time, random, pygame, threading
 
 try :
-    delay   = float(sys.argv[1])
+    delay   = float(sys.argv[2])
 except :
     delay   = 3
 
 try :
-    still   = float(sys.argv[2])
+    still   = float(sys.argv[3])
 except :
     still   = 0.1
 
@@ -33,7 +33,7 @@ fps         = 10
 
 avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
 try :
-    choosen = sys.argv[3]
+    choosen = sys.argv[1]
     if (choosen is not 'stop') : choosen = 'fill_' + choosen
     image   = env.getRectIMG(choosen)
 except :
