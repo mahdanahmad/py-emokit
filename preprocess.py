@@ -99,6 +99,11 @@ def findStimulus(timeData, timeStimulus, parsed=0) :
         for key, val in enumerate(timeData) :
             if (val in timeStimulus) : result.append(key)
 
+    prev    = 0
+    for val in result :
+        if ((prev is not 0) and (prev + 1) == val) : result.remove(val)
+        prev = val
+
     return result
 
 def chainSSVEP(data, fs, lowcut, highcut) :

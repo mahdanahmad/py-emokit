@@ -25,7 +25,7 @@ def loadStimulus(diff=0)  :
     with open('data/stimulus_out.csv') as afile :
         result  = []
         for line in afile :
-            result.append(float(line) + diff)
+            result.append(float(line) - diff)
 
         return np.array(result)
 
@@ -41,18 +41,24 @@ def run() :
 
     output          = open(fullpath, 'w')
 
-    directory       = ['data/20160425']
+    directory       = ['data/20160503']
 
     for current_dir in directory :
         for file in os.listdir(current_dir):
             source      = current_dir + '/' + file
-            print source
-            
+            # print source
+
             data            = readFromFile(source)
             timestamp       = data[:,0]
 
-            stimulus_out    = loadStimulus(4.0)
+            stimulus_out    = loadStimulus(5.0)
             stimulus        = findStimulus(timestamp, stimulus_out, 6)
+
+            direction       = file.split('_')[2]
+
+            print source
+            # print source + " " + str(len(stimulus))
+            # print direction
 
             for i in range(2, 16) :
                 current     = moveToAxis(data[:,i])
@@ -61,14 +67,16 @@ def run() :
                 diff        = findDifference(power)
 
                 for val in stimulus :
-                    output.write('%s,' % header[i-2])
+                    if (len(diff) - (val)) > 8 :
+                        output.write('%s,%s,' % (direction, header[i-2]))
 
-                    diff_list   = []
-                    for idx in range(3,10) :
-                        output.write('%.2f,' % diff[val + idx])
-                        diff_list.append(diff[val + idx])
+                        diff_list   = []
+                        for idx in range(3,10) :
+                            if ((val + idx) < (len(diff) - 1)) :
+                                output.write('%.2f,' % diff[val + idx])
+                                diff_list.append(diff[val + idx])
 
-                    output.write('%.2f,%.2f\n' % (np.amax(diff_list), np.mean(diff_list)))
+                        if diff_list : output.write('%.2f,%.2f\n' % (np.amax(diff_list), np.mean(diff_list)))
 
 if __name__ == "__main__":
     run()
