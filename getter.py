@@ -9,11 +9,6 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
-low_limit       = 7
-high_limit      = 15
-filter_order    = 10
-sampling_rate   = 129
-
 if __name__ == "__main__":
     try :
         name    = sys.argv[1]
@@ -102,31 +97,3 @@ if __name__ == "__main__":
     finally:
         headset.close()
         os.system('clear')
-
-        # start_time  = time.time()
-        # for key, val in sorted(data.iteritems()):
-        #     if key is not 'second' and key is not 'counter' :
-        #         centered    = doCentering(val)
-        #         filtered    = doFiltering(centered, low_limit, high_limit, sampling_rate, filter_order)
-        #         fft_result  = createFFT(filtered)
-        #         psd_result  = createPSD(fft_result, sampling_rate)
-        #
-        #         plt.plot(centered)
-        #         plt.title(key)
-        #         if key is not 'T8': plt.figure()
-        #
-        # elapsed_time = time.time() - start_time
-        # print 'elapsed = %.3f s' % (elapsed_time)
-        #
-        # plt.show()
-        # data[:] = [doCentering(val) for val in data]
-        # data[:] = [doFiltering(val, 6, 30, 129, 10) for val in data]
-        # data[:] = [createFFT(val) for val in data]
-        # data[:] = [createPSD(val, 129) for val in data]
-
-        # for key, val in enumerate(data):
-        #     plt.plot(val)
-        #     if (key < (len(data) - 1)) :
-        #         plt.figure()
-        #
-        # plt.show()
