@@ -1,21 +1,10 @@
-import os
-import sys
-import time
-import math
-import random
-import numpy as np
+import os, sys, math
 import matplotlib.pyplot as plt
 
-from env import *
-from datetime import datetime
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
-low_limit       = 5
-high_limit      = 20
 sampling_rate   = 129
-split_amount    = 6
-
-header          = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
 try :
     source      = sys.argv[1]
@@ -41,16 +30,7 @@ def loadStimulus(diff=0)  :
 
         return np.array(result)
 
-def countDiff(data) :
-    result          = parse(data, 6)
-    result          = countAllPower(result)
-    result          = findDifference(result)
-
-    return result
-
 def run() :
-    start_time      = time.time()
-
     data            = readFromFile(source)
     timestamp       = data[:,0]
 
@@ -58,8 +38,8 @@ def run() :
     stimulus        = findStimulus(timestamp, stimulus_out)
 
     stimulus_single = (int)(sampling_rate / 3)
-    first_cut       = stimulus[3] - stimulus_single
-    second_cut      = stimulus[3] + sampling_rate
+    first_cut       = stimulus[0] - stimulus_single
+    second_cut      = stimulus[0] + sampling_rate
     sampling        = (1000 / sampling_rate)
     for i in range(2, 16) :
         current         = moveToAxis(data[:,i])
@@ -77,18 +57,13 @@ def run() :
 
         suspectedPower  = countPower(first_stimulus[first_base:end_game])
         totalPower      = countPower(first_stimulus[stimulus_single:end_game])
-
         percentage      = (suspectedPower * 100) / totalPower
-        # print percentage
 
         plt.title("{0:.2f}%".format(percentage))
 
         if (i < 15) : plt.figure()
 
     plt.show()
-
-    elapsed_time    = time.time() - start_time
-    print 'elapsed = %.3f s' % (elapsed_time)
 
 if __name__ == "__main__":
     run()
