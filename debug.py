@@ -20,8 +20,10 @@ header          = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4
 try :
     source      = sys.argv[1]
 except:
-    # source      = 'data/10-stop'
-    source      = 'data/20160503/174424_p300_stop_20.csv'
+    # source      = 'data/20160503/174424_p300_stop_20.csv'
+    # source      = 'data/20160503/175805_p300_forward_20.csv'
+    source      = 'data/20160503/180853_p300_left_20.csv'
+    # source      = 'data/20160503/181835_p300_right_20.csv'
 
 def readFromFile(filename) :
     with open(filename) as afile :
@@ -51,6 +53,19 @@ def countDiff(data) :
 def run() :
     start_time      = time.time()
 
+    direction       = source.split('_')[2]
+    fullpath        = os.path.join('result', 'dump_' + direction + '.csv')
+
+    if not os.path.exists(os.path.dirname(fullpath)):
+        try:
+            os.makedirs(os.path.dirname(fullpath))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+
+    output          = open(fullpath, 'w')
+    output.write("F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4\n")
+
     data            = readFromFile(source)
     timestamp       = data[:,0]
 
@@ -58,34 +73,54 @@ def run() :
     stimulus        = findStimulus(timestamp, stimulus_out)
 
     stimulus_single = (int)(sampling_rate / 3)
-    first_cut       = stimulus[3] - stimulus_single
-    second_cut      = stimulus[3] + sampling_rate
     sampling        = (1000 / sampling_rate)
-    for i in range(2, 16) :
-        current         = moveToAxis(data[:,i])
-        first_stimulus  = current[first_cut:second_cut]
-        x               = np.arange(len(first_stimulus))
+    for key, val in enumerate(stimulus) :
+        first_cut       = val - stimulus_single
+        second_cut      = val + sampling_rate
 
-        plt.plot(x * sampling , first_stimulus)
+        if (first_cut < 0) : first_cut = 0
 
-        plt.axvline(x=(stimulus_single * sampling), color='r', ls='--')
-        plt.axvline(x=((stimulus_single * sampling) + 140), color='g', ls='--')
-        plt.axvline(x=((stimulus_single * sampling) + 500), color='g', ls='--')
+        for i in range(2, 16) :
+            current         = moveToAxis(data[:,i])
 
-        first_base      = (int)(stimulus_single + math.floor(sampling_rate * 0.14))
-        end_game        = (int)(stimulus_single + math.ceil(sampling_rate * 0.50))
+            if (len(current) >= second_cut) :
+                first_stimulus  = current[first_cut:second_cut]
+                x               = np.arange(len(first_stimulus))
 
-        suspectedPower  = countPower(first_stimulus[first_base:end_game])
-        totalPower      = countPower(first_stimulus[stimulus_single:end_game])
+                plt.plot((x - stimulus_single) * sampling , first_stimulus)
 
-        percentage      = (suspectedPower * 100) / totalPower
-        # print percentage
+                plt.xlabel('Time [ms]')
+                plt.ylabel('Power')
 
-        plt.title("{0:.2f}%".format(percentage))
+                # plt.axvline(x=(stimulus_single * sampling), color='r', ls='--')
+                # plt.axvline(x=((stimulus_single * sampling) + 140), color='g', ls='--')
+                # plt.axvline(x=((stimulus_single * sampling) + 500), color='g', ls='--')
+                plt.axvline(x=0, color='r', ls='--')
+                plt.axvline(x=140, color='g', ls='--')
+                plt.axvline(x=500, color='g', ls='--')
 
-        if (i < 15) : plt.figure()
+                first_base      = (int)(stimulus_single + math.floor(sampling_rate * 0.14))
+                end_game        = (int)(stimulus_single + math.ceil(sampling_rate * 0.50))
 
-    plt.show()
+                suspectedPower  = countPower(first_stimulus[first_base:end_game])
+                totalPower      = countPower(first_stimulus[stimulus_single:end_game])
+
+                percentage      = (suspectedPower * 100) / totalPower
+                # print percentage
+
+                plt.title("{0:.2f}%".format(percentage))
+
+                if (i < 15) :
+                    output.write("{0:.2f},".format(percentage))
+                    plt.figure()
+                else :
+                    output.write("{0:.2f}\n".format(percentage))
+                    plt.show()
+
+                # print len(first_stimulus[first_base:end_game])
+                # print len(first_stimulus[stimulus_single:end_game])
+
+    # plt.show()
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)

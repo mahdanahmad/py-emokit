@@ -48,9 +48,15 @@ def run() :
 
         plt.plot(x * sampling , first_stimulus)
 
-        plt.axvline(x=(stimulus_single * sampling), color='r', ls='--')
-        plt.axvline(x=((stimulus_single * sampling) + 140), color='g', ls='--')
-        plt.axvline(x=((stimulus_single * sampling) + 500), color='g', ls='--')
+        plt.xlabel('Time [ms]')
+        plt.ylabel('Power')
+
+        # plt.axvline(x=(stimulus_single * sampling), color='r', ls='--')
+        # plt.axvline(x=((stimulus_single * sampling) + 140), color='g', ls='--')
+        # plt.axvline(x=((stimulus_single * sampling) + 500), color='g', ls='--')
+        plt.axvline(x=0, color='r', ls='--')
+        plt.axvline(x=140, color='g', ls='--')
+        plt.axvline(x=500, color='g', ls='--')
 
         first_base      = (int)(stimulus_single + math.floor(sampling_rate * 0.14))
         end_game        = (int)(stimulus_single + math.ceil(sampling_rate * 0.50))
