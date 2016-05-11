@@ -80,8 +80,8 @@ def run() :
 
         if (first_cut < 0) : first_cut = 0
 
-        iteree  = range(2, 16)
-        # iteree  = [6,7,9,11]
+        # iteree  = range(2, 16)
+        iteree  = [6,7,9,11]
         # iteree  = [9]
 
         for key, val in enumerate(iteree) :
@@ -113,8 +113,8 @@ def run() :
                 #
                 # print total / len(first_stimulus[stimulus_single:end_game])
 
-                somewhatNow     = ((suspectedMax - averageBefore) / suspectedMax) * 100
-                # somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
+                # somewhatNow     = ((suspectedMax - averageBefore) / suspectedMax) * 100
+                somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
                 print header[val-2] + ' ' + str(suspectedMax) + ' | ' + str(averageBefore) + ' => {0:.2f}%'.format(somewhatNow)
 
                 plt.title("{0:.2f}%".format(somewhatNow))
@@ -135,7 +135,7 @@ def run() :
 
                 suspectedMax    = max(moveToAxis(first_stimulus[first_base:end_game]))
                 averageBefore   = np.average(moveToAxis(first_stimulus[stimulus_single:end_game]))
-                somewhatNow     = ((suspectedMax - averageBefore) / suspectedMax) * 100
+                somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
 
                 suspectedPower  = countPower(moveToAxis(first_stimulus[first_base:end_game]))
                 totalPower      = countPower(moveToAxis(first_stimulus[stimulus_single:end_game]))
@@ -143,14 +143,14 @@ def run() :
 
                 plt.title("%s | %s" % ("{0:.2f}%".format(somewhatNow), "{0:.2f}%".format(percentage)))
 
-                plt.show()
+                # plt.show()
 
-                # if (key < (len(iteree) - 1)) :
-                #     # output.write("{0:.2f},".format(percentage))
-                #     plt.figure()
-                # else :
-                #     # output.write("{0:.2f}\n".format(percentage))
-                #     plt.show()
+                if (key < (len(iteree) - 1)) :
+                    # output.write("{0:.2f},".format(percentage))
+                    plt.figure()
+                else :
+                    # output.write("{0:.2f}\n".format(percentage))
+                    plt.show()
 
                 # print len(first_stimulus[first_base:end_game])
                 # print len(first_stimulus[stimulus_single:end_game])

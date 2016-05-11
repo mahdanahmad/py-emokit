@@ -71,7 +71,7 @@ def run() :
                         output.write('%s,%s,' % (direction, header[i-2]))
 
                         diff_list   = []
-                        for idx in range(3,10) :
+                        for idx in range(3,11) :
                             if ((val + idx) < (len(diff) - 1)) :
                                 output.write('%.2f,' % diff[val + idx])
                                 diff_list.append(diff[val + idx])
