@@ -72,23 +72,20 @@ def run() :
     stimulus_out    = loadStimulus(5.0)
     stimulus        = findStimulus(timestamp, stimulus_out)
 
-    stimulus_single = (int)(sampling_rate / 3)
+    stimulus_single = 0
     sampling        = (1000 / sampling_rate)
-    for key, val in enumerate(stimulus[:1]) :
+    for key, val in enumerate(stimulus) :
         first_cut       = val - stimulus_single
         second_cut      = val + sampling_rate
 
         if (first_cut < 0) : first_cut = 0
 
-        # iteree  = range(2, 16)
-        iteree  = [6,7,9,11]
-        # iteree  = [9]
-
+        iteree  = range(2, 16)
         for key, val in enumerate(iteree) :
             current         = moveToAxis(data[:,val])
 
             if (len(current) >= second_cut) :
-                first_stimulus  = current[first_cut:second_cut]
+                first_stimulus  = moveToAxis(current[first_cut:second_cut])
                 x               = np.arange(len(first_stimulus))
 
                 plt.plot((x - stimulus_single) * sampling , first_stimulus)
@@ -106,15 +103,7 @@ def run() :
                 suspectedMax    = max(first_stimulus[first_base:end_game])
                 averageBefore   = np.average(first_stimulus[stimulus_single:end_game])
 
-                # total   = 0
-                # for value in first_stimulus[stimulus_single:end_game] :
-                #     print str(total) + ' + ' + str(value) + ' = ' + str(total + value)
-                #     total   += value
-                #
-                # print total / len(first_stimulus[stimulus_single:end_game])
-
-                somewhatNow     = ((suspectedMax - averageBefore) / suspectedMax) * 100
-                # somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
+                somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
                 print header[val-2] + ' ' + str(suspectedMax) + ' | ' + str(averageBefore) + ' => {0:.2f}%'.format(somewhatNow)
 
                 plt.title("{0:.2f}%".format(somewhatNow))

@@ -9,7 +9,10 @@ high_limit      = 20
 sampling_rate   = 129
 split_amount    = 6
 
-header          = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
+first_base  = 18
+home_run    = 65
+
+header          = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4","Direction"]
 
 def readFromFile(filename) :
     with open(filename) as afile :
@@ -40,9 +43,9 @@ def run() :
                 raise
 
     output          = open(fullpath, 'w')
+    output.write(','.join(header) + '\n')
 
     directory       = ['data/20160503']
-
     for current_dir in directory :
         for file in os.listdir(current_dir):
             source      = current_dir + '/' + file
@@ -52,32 +55,26 @@ def run() :
             timestamp       = data[:,0]
 
             stimulus_out    = loadStimulus(5.0)
-            stimulus        = findStimulus(timestamp, stimulus_out, 6)
+            stimulus        = findStimulus(timestamp, stimulus_out)
 
             direction       = file.split('_')[2]
 
             print source
-            # print source + " " + str(len(stimulus))
-            # print direction
 
-            for i in range(2, 16) :
-                current     = moveToAxis(data[:,i])
-                parsed      = parse(current, split_amount)
-                power       = countAllPower(parsed)
-                diff        = findDifference(power)
+            for idx, value in enumerate(stimulus) :
+                iteree      = range(2, 16)
 
-                for val in stimulus :
-                    if (len(diff) - (val)) > 8 :
-                        output.write('%s,%s,' % (direction, header[i-2]))
+                if ((value + home_run) <= len(data[:,0])) :
+                    for key, val in enumerate(iteree) :
+                        current         = moveToAxis(data[:,val][value:(value+home_run)])
+                        suspectedMax    = max(current[first_base:home_run])
+                        averageBefore   = np.average(current[first_base:home_run])
+                        percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
 
-                        diff_list   = []
-                        for idx in range(3,10) :
-                            if ((val + idx) < (len(diff) - 1)) :
-                                output.write('%.2f,' % diff[val + idx])
-                                diff_list.append(diff[val + idx])
-
-                        if diff_list : output.write('%.2f,%.2f\n' % (np.amax(diff_list), np.mean(diff_list)))
-
+                        if (key < (len(iteree) - 1)) :
+                            output.write("{0:.2f},".format(percentageDiff))
+                        else :
+                            output.write("{0:.2f}".format(percentageDiff) + ',' + direction + '\n')
 if __name__ == "__main__":
     run()
     # print env_serial\

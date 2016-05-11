@@ -61,7 +61,8 @@ def run(source) :
     stimulus_out    = loadStimulus(5.0)
     stimulus        = findStimulus(timestamp, stimulus_out)
 
-    stimulus_single = (int)(sampling_rate / 3)
+    # stimulus_single = (int)(sampling_rate / 3)
+    stimulus_single = 0
     sampling        = (1000 / sampling_rate)
     for key, val in enumerate(stimulus) :
         first_cut       = val - stimulus_single
@@ -69,11 +70,13 @@ def run(source) :
 
         if (first_cut < 0) : first_cut = 0
 
-        for i in range(2, 16) :
+        iteree      = range(2, 16)
+
+        for idx, i in enumerate(iteree) :
             current         = moveToAxis(data[:,i])
 
             if (len(current) >= second_cut) :
-                first_stimulus  = current[first_cut:second_cut]
+                first_stimulus  = moveToAxis(current[first_cut:second_cut])
                 x               = np.arange(len(first_stimulus))
 
                 plt.plot((x - stimulus_single) * sampling , first_stimulus)
@@ -91,15 +94,15 @@ def run(source) :
                 first_base      = (int)(stimulus_single + math.floor(sampling_rate * 0.14))
                 end_game        = (int)(stimulus_single + math.ceil(sampling_rate * 0.50))
 
-                suspectedPower  = countPower(first_stimulus[first_base:end_game])
-                totalPower      = countPower(first_stimulus[stimulus_single:end_game])
+                suspectedMax    = max(first_stimulus[first_base:end_game])
+                averageBefore   = np.average(first_stimulus[stimulus_single:end_game])
 
-                percentage      = (suspectedPower * 100) / totalPower
-                # print percentage
+                somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
+                print header[idx] + ' ' + str(suspectedMax) + ' | ' + str(averageBefore) + ' => {0:.2f}%'.format(somewhatNow)
 
-                plt.title("{0:.2f}%".format(percentage))
+                plt.title("{0:.2f}%".format(somewhatNow))
 
-                if (i < 15) :
+                if (idx < (len(iteree) - 1)) :
                     # output.write("{0:.2f},".format(percentage))
                     plt.figure()
                 else :
@@ -110,7 +113,8 @@ def run(source) :
                 # print len(first_stimulus[stimulus_single:end_game])
 
 if __name__ == "__main__":
-    for val in source : run(val)
+    run(source[2])
+    # for val in source : run(val)
 
     # run()
     # print env_serial\
