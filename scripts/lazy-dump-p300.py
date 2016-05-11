@@ -61,8 +61,16 @@ def run() :
 
             print source
 
+<<<<<<< HEAD
             for idx, value in enumerate(stimulus) :
                 iteree      = range(2, 16)
+=======
+                        diff_list   = []
+                        for idx in range(3,11) :
+                            if ((val + idx) < (len(diff) - 1)) :
+                                output.write('%.2f,' % diff[val + idx])
+                                diff_list.append(diff[val + idx])
+>>>>>>> afd85c0c4fb58ebac989064e8a33dbca8302e675
 
                 if ((value + home_run) <= len(data[:,0])) :
                     for key, val in enumerate(iteree) :
