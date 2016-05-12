@@ -61,6 +61,8 @@ def run(source) :
     stimulus_out    = loadStimulus(5.0)
     stimulus        = findStimulus(timestamp, stimulus_out)
 
+    print stimulus
+
     # stimulus_single = (int)(sampling_rate / 3)
     stimulus_single = 0
     sampling        = (1000 / sampling_rate)
@@ -98,7 +100,7 @@ def run(source) :
                 averageBefore   = np.average(first_stimulus[stimulus_single:end_game])
 
                 somewhatNow     = countPercentageDifferent(suspectedMax, averageBefore)
-                print header[idx] + ' ' + str(suspectedMax) + ' | ' + str(averageBefore) + ' => {0:.2f}%'.format(somewhatNow)
+                # print header[idx] + ' ' + str(suspectedMax) + ' | ' + str(averageBefore) + ' => {0:.2f}%'.format(somewhatNow)
 
                 plt.title("{0:.2f}%".format(somewhatNow))
 
@@ -107,14 +109,12 @@ def run(source) :
                     plt.figure()
                 else :
                     # output.write("{0:.2f}\n".format(percentage))
-                    plt.show()
+                    # plt.show()
+                    pass
 
                 # print len(first_stimulus[first_base:end_game])
                 # print len(first_stimulus[stimulus_single:end_game])
 
 if __name__ == "__main__":
-    run(source[2])
+    run(source[3])
     # for val in source : run(val)
-
-    # run()
-    # print env_serial\
