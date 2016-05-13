@@ -9,16 +9,17 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
-if __name__ == "__main__":
-    try :
-        name    = sys.argv[1]
-    except:
-        name    = 'unnamed'
-    try :
-        maxtime = int(sys.argv[2])
-    except:
-        maxtime = 10
+try :
+    name    = sys.argv[1]
+except:
+    name    = 'unnamed'
+    
+try :
+    maxtime = int(sys.argv[2])
+except:
+    maxtime = 10
 
+if __name__ == "__main__":
     # headset = Emotiv(display_output=False)
     headset     = Emotiv()
     gevent.spawn(headset.setup)
@@ -38,7 +39,7 @@ if __name__ == "__main__":
 
     output      = open(fullpath, 'w')
 
-    data = {
+    data        = {
         'second'    : [],
         'counter'   : [],
         'F3'        : [],
@@ -61,11 +62,14 @@ if __name__ == "__main__":
     second      = 0
     first       = -1
     try:
+        start_time      = int(round(time.time() * 1000))
         while ( second < maxtime ):
-            packet = headset.dequeue()
-            output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time.time(), packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
+            time_now    = start_time - int(round(time.time() * 1000))
+            packet      = headset.dequeue()
+            # output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time.time(), packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
+            output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time_now, packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
 
-            data['second'].append(time.time())
+            data['second'].append(time_now)
             data['counter'].append(packet.counter)
             data['F3'].append(packet.F3[0])
             data['FC5'].append(packet.FC5[0])
@@ -85,7 +89,7 @@ if __name__ == "__main__":
             if (first == -1) :
                 first = packet.counter
             else :
-                if (packet.counter == first) :
+                if (packet.counter == (first - 1)) :
                     second  = second + 1
                     print second
 

@@ -1,4 +1,4 @@
-from env import Env
+from stimulus_env import Env
 from pygame.locals import *
 
 import pygame, threading, os, sys
