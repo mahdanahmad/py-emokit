@@ -10,7 +10,7 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
-wasted_time     = 1
+wasted_time     = 10
 between_time    = 3
 stimulus_out    = 1
 stimulus_shown  = range(0,15)
