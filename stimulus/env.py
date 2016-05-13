@@ -47,6 +47,7 @@ class Env():
         self.__clr_red      = (255, 0, 0)
         self.__clr_green    = (0, 255, 0)
         self.__clr_blue     = (0, 0, 255)
+        self.__clr_yellow   = (234, 235, 189)
 
         self.__width        = screenWidth
         self.__height       = screenHeight
@@ -92,7 +93,8 @@ class Env():
             'black'         : self.__clr_black,
             'red'           : self.__clr_red,
             'green'         : self.__clr_green,
-            'blue'          : self.__clr_blue
+            'blue'          : self.__clr_blue,
+            'yellow'        : self.__clr_yellow
         }.get(state, self.__clr_white)
 
     def getRectIMG(self, state=None)    :

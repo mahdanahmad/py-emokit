@@ -1,13 +1,10 @@
-import os, sys, time, errno, platform
+import os, sys, time, errno, pygame, platform
 import matplotlib.pyplot as plt
 
-from datetime import datetime
-from stimulus_env import Env
-from pygame.locals import *
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from emokit.emotiv import Emotiv
-from preprocess import *
+from datetime import datetime
+from stimulus.env import Env
+from pygame.locals import *
 
 if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
@@ -25,6 +22,52 @@ try :
     max_out = int(sys.argv[2])
 except:
     max_out = 5
+
+pygame.init()
+info        = pygame.display.Info()
+clock       = pygame.time.Clock()
+env         = Env(info.current_w, info.current_h)
+
+screen      = pygame.display.set_mode(env.getResolution(), pygame.FULLSCREEN)
+clr_back    = env.getColor('black')
+clr_yellow  = env.getColor('yellow')
+clr_default = env.getColor('white')
+
+screen.fill(clr_back)
+pygame.display.update()
+
+position    = env.getRectPos()
+updatable   = position + env.getRectSize()
+
+run         = True
+
+avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
+
+def coverBack() :
+    surface = pygame.Surface(env.getRectSize())
+    surface.fill(clr_back)
+
+    screen.blit(surface, position)
+
+def drawRectangle(img) :
+    surface = pygame.Surface(env.getRectSize())
+    surface.fill(clr_default)
+    surface.blit(img, (0, 0))
+
+    screen.blit(surface, position)
+
+def eventLoop() :
+    for event in pygame.event.get():
+        if event.type == QUIT :
+            pygame.quit()
+            sys.exit()
+        elif event.type == KEYDOWN :
+            if event.key == K_ESCAPE :
+                pygame.quit()
+                sys.exit()
+            if event.key == K_SPACE :
+                global run
+                run = not run
 
 if __name__ == "__main__":
     # headset = Emotiv(display_output=False)
@@ -98,11 +141,21 @@ if __name__ == "__main__":
                 counter = 0
                 iteree += 1
 
+                print iteree
+
+            if ((iteree % between_time) is stimulus_out) :
+                pass
+
             gevent.sleep(0)
 
     except KeyboardInterrupt:
         headset.close()
         os.system('clear')
+        pygame.quit()
+        sys.exit()
+
     finally:
         headset.close()
         os.system('clear')
+        pygame.quit()
+        sys.exit()

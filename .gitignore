@@ -1,10 +1,12 @@
 .DS_Store
-build
-emokit/__init__.pyc
-emotiv.pyc
 dist
-emokit.egg-info
+build
 env.pyc
+emotiv.pyc
 preprocess.pyc
+emokit.egg-info
+emokit/__init__.pyc
+stimulus/env.pyc
+stimulus/__init__.pyc
 stimulus/stimulus_env.pyc
 result/dump*
