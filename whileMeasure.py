@@ -1,4 +1,4 @@
-import os, sys, time, errno, pygame, platform
+import os, sys, time, errno, pygame, random, platform
 import matplotlib.pyplot as plt
 
 from emokit.emotiv import Emotiv
@@ -10,8 +10,9 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
-between_time   = 2
-stimulus_out   = 1
+wasted_time     = 10
+between_time    = 2
+stimulus_out    = 1
 
 try :
     name    = sys.argv[1]
@@ -42,6 +43,12 @@ updatable   = position + env.getRectSize()
 run         = True
 
 avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
+
+image       = []
+image_ctr   = []
+for val in avail_state :
+    image[val]      = env.getRectIMG(val)
+    image_ctr[val]  = max_out
 
 def coverBack() :
     surface = pygame.Surface(env.getRectSize())
@@ -88,53 +95,17 @@ if __name__ == "__main__":
                 raise
 
     output      = open(fullpath, 'w')
-
-    data        = {
-        'second'    : [],
-        'counter'   : [],
-        'F3'        : [],
-        'FC5'       : [],
-        'AF3'       : [],
-        'F7'        : [],
-        'T7'        : [],
-        'P7'        : [],
-        'O1'        : [],
-        'O2'        : [],
-        'P8'        : [],
-        'T8'        : [],
-        'F8'        : [],
-        'AF4'       : [],
-        'FC6'       : [],
-        'F4'        : []
-    }
     # output.write("SECOND,COUNTER,F3,FC5,AF3,F7,T7,P7,O1,O2,P8,T8,F8,AF4,FC6,F4,GYRO_X,GYRO_Y\n")
 
     iteree      = 0
     counter     = 0
     try:
+        time.sleep(wasted_time)
         start_time      = int(round(time.time() * 1000))
         while ( iteree < max_out ):
             time_now    = int(round(time.time() * 1000)) - start_time
             packet      = headset.dequeue()
-            # output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time.time(), packet.counter, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
             output.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (time_now, iteree, packet.F3[0], packet.FC5[0], packet.AF3[0], packet.F7[0], packet.T7[0], packet.P7[0], packet.O1[0], packet.O2[0], packet.P8[0], packet.T8[0], packet.F8[0], packet.AF4[0], packet.FC6[0], packet.F4[0], packet.gyro_x, packet.gyro_y))
-
-            data['second'].append(time_now)
-            data['counter'].append(iteree)
-            data['F3'].append(packet.F3[0])
-            data['FC5'].append(packet.FC5[0])
-            data['AF3'].append(packet.AF3[0])
-            data['F7'].append(packet.F7[0])
-            data['T7'].append(packet.T7[0])
-            data['P7'].append(packet.P7[0])
-            data['O1'].append(packet.O1[0])
-            data['O2'].append(packet.O2[0])
-            data['P8'].append(packet.P8[0])
-            data['T8'].append(packet.T8[0])
-            data['F8'].append(packet.F8[0])
-            data['AF4'].append(packet.AF4[0])
-            data['FC6'].append(packet.FC6[0])
-            data['F4'].append(packet.F4[0])
 
             counter += 1
             if (counter is 128) :
@@ -143,8 +114,11 @@ if __name__ == "__main__":
 
                 print iteree
 
-            if ((iteree % between_time) is stimulus_out) :
-                pass
+            if (((iteree % between_time) is stimulus_out) and ((counter is 0) and (counter is 1))) :
+                image_state = random.choice(avail_state)
+                drawRectangle(image[image_state])
+            else :
+                coverBack()
 
             gevent.sleep(0)
 
