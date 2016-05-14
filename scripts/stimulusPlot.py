@@ -109,8 +109,8 @@ def run(source) :
                     plt.figure()
                 else :
                     # output.write("{0:.2f}\n".format(percentage))
-                    # plt.show()
-                    pass
+                    plt.show()
+                    # pass
 
                 # print len(first_stimulus[first_base:end_game])
                 # print len(first_stimulus[stimulus_single:end_game])
