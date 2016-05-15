@@ -24,13 +24,19 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def loadStimulus(diff=0)  :
-    with open('data/stimulus_out.csv') as afile :
-        result  = []
+def loadStimuli(source) :
+    stimuliPath = 'result/stimulus' + source.replace('data', '')
+    with open(stimuliPath) as afile :
+        result  = {
+            'time'      : [],
+            'direction' : []
+        }
         for line in afile :
-            result.append(float(line) - diff)
+            splittedLine    = line.rstrip().split(',')
+            result['time'].append(int(splittedLine[0]))
+            result['direction'].append(splittedLine[1])
 
-        return np.array(result)
+        return result
 
 def run() :
     fullpath        = os.path.join('result', 'dump_p300.csv')
@@ -45,28 +51,24 @@ def run() :
     output          = open(fullpath, 'w')
     output.write(','.join(header) + '\n')
 
-    directory       = ['data/20160503']
+    directory       = ['data/20160513']
     for current_dir in directory :
-        for file in os.listdir(current_dir):
-            source      = current_dir + '/' + file
-            # print source
-
-            data            = readFromFile(source)
-            timestamp       = data[:,0]
-
-            stimulus_out    = loadStimulus(5.0)
-            stimulus        = findStimulus(timestamp, stimulus_out)
-
-            direction       = file.split('_')[2]
-
+        for afile in os.listdir(current_dir):
+            source      = current_dir + '/' + afile
             print source
 
-            for idx, value in enumerate(stimulus) :
+            data        = readFromFile(source)
+            timestamp   = data[:,0]
+
+            stimuli     = loadStimuli(source)
+            stimuli_pos = findStimulus(timestamp, stimuli['time'])
+
+            for stimulus_idx, stimulus_pos in enumerate(stimuli_pos) :
                 iteree      = range(2, 16)
 
-                if ((value + home_run) <= len(data[:,0])) :
+                if ((stimulus_pos + home_run) <= len(data[:,0])) :
                     for key, val in enumerate(iteree) :
-                        current         = moveToAxis(data[:,val][value:(value+home_run)])
+                        current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
                         suspectedMax    = max(current[first_base:home_run])
                         averageBefore   = np.average(current[first_base:home_run])
                         percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
@@ -74,7 +76,7 @@ def run() :
                         if (key < (len(iteree) - 1)) :
                             output.write("{0:.2f},".format(percentageDiff))
                         else :
-                            output.write("{0:.2f}".format(percentageDiff) + ',' + direction + '\n')
+                            output.write("{0:.2f}".format(percentageDiff) + ',' + stimuli['direction'][stimulus_idx] + '\n')
 if __name__ == "__main__":
     run()
     # print env_serial\

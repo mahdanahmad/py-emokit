@@ -53,14 +53,6 @@ def readFromFile(filename) :
 
         return np.array(result)
 
-def loadStimulus(diff=0)  :
-    with open('data/stimulus_out.csv') as afile :
-        result  = []
-        for line in afile :
-            result.append(float(line) - diff)
-
-        return np.array(result)
-
 def loadStimuli(source) :
     stimuliPath = 'result/stimulus' + source.replace('data', '')
     with open(stimuliPath) as afile :
