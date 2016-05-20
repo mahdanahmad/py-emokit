@@ -4,11 +4,6 @@ import numpy as np
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
-low_limit       = 5
-high_limit      = 20
-sampling_rate   = 129
-split_amount    = 6
-
 first_base  = 18
 home_run    = 65
 
