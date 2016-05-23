@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from preprocess import *
 
 first_base  = 18
-home_run    = 65
+home_run    = 192
 
 header      = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
@@ -40,6 +40,9 @@ def loadStimuli(source) :
 def run() :
     start_time      = time.time()
 
+    min_peak        = []
+    max_peak        = []
+
     for current_dir in directory :
         for afile in os.listdir(current_dir):
             source      = current_dir + '/' + afile
@@ -67,38 +70,19 @@ def run() :
                 if ((stimulus_pos + home_run) <= len(data[:,0])) :
                     for key, val in enumerate(iteree) :
                         current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
-                        suspectedMax    = max(current[first_base:home_run])
-                        averageBefore   = np.average(current[first_base:home_run])
-                        percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
 
-                        yPlot           = moveToAxis(data[:,val][(stimulus_pos - 15):(stimulus_pos + 192)])
-                        xPlot           = timestamp[(stimulus_pos - 15):(stimulus_pos + 192)] - timestamp[stimulus_pos]
+                        min_peak.append(np.argmin(current))
+                        max_peak.append(np.argmax(current))
 
-                        plt.axvline(x=0, color='r', ls='--')
-                        plt.axvline(x=(timestamp[stimulus_pos + 14] - timestamp[stimulus_pos]), color='r', ls='--')
-                        plt.axvline(x=(timestamp[stimulus_pos + first_base] - timestamp[stimulus_pos]), color='g', ls='--')
-                        plt.axvline(x=(timestamp[stimulus_pos + home_run] - timestamp[stimulus_pos]), color='g', ls='--')
+                        # print "min : " + str(np.argmin(current)) + ". max : " + str(np.argmax(current))
 
-                        plt.plot(xPlot, yPlot)
-                        plt.title("{0:.2f}%".format(percentageDiff))
+    print "max : " + str(np.amin(max_peak)) + " - " + str(np.amax(max_peak)) + ". mean : " + str(np.mean(max_peak)) + ". most : " + str(np.bincount(max_peak).argmax())
+    print "min : " + str(np.amin(min_peak)) + " - " + str(np.amax(min_peak)) + ". mean : " + str(np.mean(min_peak)) + ". most : " + str(np.bincount(min_peak).argmax())
 
-                        plotFile        = plotPath + '/' + header[val - 2] + '.jpg'
-                        print plotFile
-
-                        if not os.path.exists(os.path.dirname(plotFile)):
-                            try:
-                                os.makedirs(os.path.dirname(plotFile))
-                            except OSError as exc: # Guard against race condition
-                                if exc.errno != errno.EEXIST:
-                                    raise
-
-                        plt.savefig(plotFile)
-                        plt.clf()
-
-                        # if (key < (len(iteree) - 1)) :
-                            # plt.figure()
-                        # else :
-                            # plt.show()
+    plt.bar(np.arange(len(np.bincount(max_peak))), np.bincount(max_peak), align='center', alpha=0.5)
+    plt.figure()
+    plt.bar(np.arange(len(np.bincount(min_peak))), np.bincount(min_peak), align='center', alpha=0.5)
+    plt.show()
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)

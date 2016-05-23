@@ -2,6 +2,7 @@ import os, sys, time, math, random, gevent
 import numpy as np
 import matplotlib.pyplot as plt
 
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
 first_base  = 18
@@ -52,7 +53,8 @@ def run() :
             stimuli_pos = findStimulus(timestamp, stimuli['time'])
 
             plotGuinea  = source.split('_')[1]
-            plotDir     = plotRoot + plotGuinea + '/'
+            # plotDir     = plotRoot + plotGuinea + '/'
+            plotDir     = plotRoot + plotGuinea + '_'
 
             if plotGuinea not in plotIteree : plotIteree[plotGuinea] = { 'left' : 1, 'right' : 1, 'forward' : 1, 'stop' : 1 }
 
@@ -61,7 +63,8 @@ def run() :
                 currIteree  = plotIteree[plotGuinea][direction]
                 plotIteree[plotGuinea][direction]   += 1
 
-                plotPath    = plotDir + direction + '/' + str(currIteree)
+                # plotPath    = plotDir + direction + '/' + str(currIteree)
+                plotPath    = plotDir + direction + '_' + str(currIteree)
 
                 iteree      = range(2, 16)
                 if ((stimulus_pos + home_run) <= len(data[:,0])) :
@@ -82,7 +85,8 @@ def run() :
                         plt.plot(xPlot, yPlot)
                         plt.title("{0:.2f}%".format(percentageDiff))
 
-                        plotFile        = plotPath + '/' + header[val - 2] + '.jpg'
+                        # plotFile        = plotPath + '/' + header[val - 2] + '.jpg'
+                        plotFile        = plotPath + '_' + header[val - 2] + '.jpg'
                         print plotFile
 
                         if not os.path.exists(os.path.dirname(plotFile)):
