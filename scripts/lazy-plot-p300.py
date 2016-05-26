@@ -17,8 +17,8 @@ files_amn   = 10
 stimuli_amn = 20
 grouped_val = True
 
-first_base  = 18
-home_run    = 65
+first_base  = 33
+home_run    = 128
 radius      = 26
 outline     = 3
 line_color  = (0,0,0)
@@ -41,7 +41,7 @@ position    = [
     [352, 210]  # F4
 ]
 
-dir_counter = { 'left' : 0, 'right' : 0, 'forward' : 0, 'stop' : 0 }
+dir_counter = { 'left' : 1, 'right' : 1, 'forward' : 1, 'stop' : 1 }
 
 def readFromFile(filename) :
     with open(filename) as afile :
@@ -146,7 +146,7 @@ def randomStimulus(stimuli, count=10, grouped=False) :
     }
 
 def saveImage(canvas, direction) :
-    output_path = "result/dump/" + direction + "_" + str(dir_counter[direction]) + ".jpg"
+    output_path = "result/dump_visual/" + direction + "_" + str(dir_counter[direction]) + ".jpg"
     dir_counter[direction] += 1
 
     print output_path
