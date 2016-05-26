@@ -14,23 +14,24 @@ try :
 except:
     home_run    = 128
 
-header      = [
-    "min_F3", "max_F3",
-    "min_FC5", "max_FC5",
-    "min_AF3", "max_AF3",
-    "min_F7", "max_F7",
-    "min_T7", "max_T7",
-    "min_P7", "max_P7",
-    "min_O1", "max_O1",
-    "min_O2", "max_O2",
-    "min_P8", "max_P8",
-    "min_T8", "max_T8",
-    "min_F8", "max_F8",
-    "min_AF4", "max_AF4",
-    "min_FC6", "max_FC6",
-    "min_F4", "max_F4",
-    "Guinea", "Direction"
-]
+# header      = [
+#     "min_F3", "max_F3",
+#     "min_FC5", "max_FC5",
+#     "min_AF3", "max_AF3",
+#     "min_F7", "max_F7",
+#     "min_T7", "max_T7",
+#     "min_P7", "max_P7",
+#     "min_O1", "max_O1",
+#     "min_O2", "max_O2",
+#     "min_P8", "max_P8",
+#     "min_T8", "max_T8",
+#     "min_F8", "max_F8",
+#     "min_AF4", "max_AF4",
+#     "min_FC6", "max_FC6",
+#     "min_F4", "max_F4",
+#     "Guinea", "Direction"
+# ]
+header      = ["F3", "FC5", "AF3", "F7", "T7", "P7", "O1", "O2", "P8", "T8", "F8", "AF4", "FC6", "F4", "Direction"]
 
 def readFromFile(filename) :
     with open(filename) as afile :
@@ -57,7 +58,7 @@ def loadStimuli(source) :
         return result
 
 def run() :
-    fullpath        = os.path.join('result', 'dump_p300_' + str(first_base) + '-' + str(home_run) + '.csv')
+    fullpath        = os.path.join('result/dump_p300', 'forthename' + str(first_base) + '-' + str(home_run) + '.csv')
 
     if not os.path.exists(os.path.dirname(fullpath)):
         try:
@@ -66,8 +67,9 @@ def run() :
             if exc.errno != errno.EEXIST:
                 raise
 
-    output          = open(fullpath, 'w')
-    output.write(','.join(header) + '\n')
+    output          = {}
+    output['all']   = open(fullpath.replace('forthename', 'all'), 'w')
+    output['all'].write(','.join(header) + '\n')
 
     directory       = ['data/20160513']
     for current_dir in directory :
@@ -75,6 +77,10 @@ def run() :
             source      = current_dir + '/' + afile
             guinea      = source.split('_')[1]
             print source
+
+            if not os.path.isfile(fullpath.replace('forthename', guinea)) :
+                output[guinea]  = open(fullpath.replace('forthename', guinea), 'w')
+                output[guinea].write(','.join(header) + '\n')
 
             data        = readFromFile(source)
             timestamp   = data[:,0]
@@ -96,9 +102,13 @@ def run() :
                         min_peax        = countPercentageDifferent(suspectedMin, averageBefore)
 
                         if (key < (len(iteree) - 1)) :
-                            output.write("{0:.2f},".format(min_peax) + "{0:.2f},".format(max_peax))
+                            # output[guinea].write("{0:.2f},".format(min_peax) + "{0:.2f},".format(max_peax))
+                            output['all'].write("{0:.2f},".format(max_peax))
+                            output[guinea].write("{0:.2f},".format(max_peax))
                         else :
-                            output.write("{0:.2f},".format(min_peax)  + "{0:.2f},".format(max_peax) + guinea + ',' + stimuli['direction'][stimulus_idx] + '\n')
+                            # output[guinea].write("{0:.2f},".format(min_peax) + "{0:.2f},".format(max_peax) + guinea + ',' + stimuli['direction'][stimulus_idx] + '\n')
+                            output['all'].write("{0:.2f},".format(max_peax) + stimuli['direction'][stimulus_idx] + '\n')
+                            output[guinea].write("{0:.2f},".format(max_peax) + stimuli['direction'][stimulus_idx] + '\n')
 if __name__ == "__main__":
     run()
     # print env_serial\
