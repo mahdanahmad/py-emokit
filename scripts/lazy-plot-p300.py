@@ -25,8 +25,8 @@ outline     = 3
 line_color  = (0,0,0)
 text_color  = (255,255,255)
 
-5"P7",6"O1",7"O2",8"P8"
-
+green       = (0, 255, 0)
+red         = (255, 0, 0)
 
 position    = [
     [233, 210], # F3
@@ -178,12 +178,16 @@ def putChannel(canvas, data, stimulus_pos, iteree, direction) :
     addition        = ImageDraw.Draw(canvas)
 
     if ((stimulus_pos + home_run) <= len(data[:,0])) :
+        channel_vals    = []
         for key, val in enumerate(iteree) :
             current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
             suspectedMax    = max(current[first_base:home_run])
             averageBefore   = np.average(current[first_base:home_run])
+
+            channel_vals.append(int(math.ceil(suspectedMax - averageBefore)))
+
             # percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
-            percentageDiff  = suspectedMax - averageBefore
+            # percentageDiff  = suspectedMax - averageBefore
 
             # if (percentageDiff > 200) :
             #     fill_value  = (0,255,0)
@@ -193,19 +197,34 @@ def putChannel(canvas, data, stimulus_pos, iteree, direction) :
             # else :
             #     red_value   = int(math.ceil((100 - percentageDiff) * 2)) + 55
             #     fill_value  = (red_value,0,0)
-            
-            if (percentageDiff < 99) :
-                text_pos    = (position[key][0] - (radius * 0.6), position[key][1] - (radius * 0.6))
-            else :
-                text_pos    = (position[key][0] - (radius * 0.9), position[key][1] - (radius * 0.6))
+
+            # if (percentageDiff < 99) :
+            #     text_pos    = (position[key][0] - (radius * 0.6), position[key][1] - (radius * 0.6))
+            # else :
+            #     text_pos    = (position[key][0] - (radius * 0.9), position[key][1] - (radius * 0.6))
 
             addition.ellipse((position[key][0] - (radius + outline), position[key][1] - (radius + outline), position[key][0] + (radius + outline), position[key][1] + (radius + outline)), fill=line_color)
             # addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=fill_value)
-            addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=(0,int(percentageDiff),0))
-            addition.text(text_pos, str(int(math.ceil(percentageDiff))), font=font, fill=text_color)
+            # addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=(0,int(percentageDiff),0))
+            # addition.text(text_pos, str(int(math.ceil(percentageDiff))), font=font, fill=text_color)
+
+
+        for val in couples :
+            left_side   = val[0]
+            right_side  = val[1]
+            difference  = channel_vals[left_side] - channel_vals[right_side]
+
+            left_pos    = (position[left_side][0] - radius, position[left_side][1] - radius, position[left_side][0] + radius, position[left_side][1] + radius)
+            right_pos   = (position[right_side][0] - radius, position[right_side][1] - radius, position[right_side][0] + radius, position[right_side][1] + radius)
+
+            if (difference > 0) :
+                addition.ellipse(left_pos, fill=green)
+                addition.ellipse(right_pos, fill=red)
+            else :
+                addition.ellipse(left_pos, fill=red)
+                addition.ellipse(right_pos, fill=green)
 
         del addition
-
         saveImage(canvas, direction)
 
 def run() :
