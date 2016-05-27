@@ -24,6 +24,9 @@ outline     = 3
 line_color  = (0,0,0)
 text_color  = (255,255,255)
 
+5"P7",6"O1",7"O2",8"P8"
+
+
 position    = [
     [233, 210], # F3
     [135, 282], # FC5
@@ -39,6 +42,16 @@ position    = [
     [419, 137], # AF4
     [455, 282], # FC6
     [352, 210]  # F4
+]
+
+couples     = [
+    [0, 13], # F3 & F4
+    [1, 12], # FC5 & FC6
+    [2, 11], # AF3 & AF4
+    [3, 10], # F7 & F8
+    [4, 9],  # T7 & T8
+    [5, 8],  # P7 & P8
+    [6, 7]   # O1 & O2
 ]
 
 dir_counter = { 'left' : 1, 'right' : 1, 'forward' : 1, 'stop' : 1 }
