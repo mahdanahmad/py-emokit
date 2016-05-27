@@ -10,15 +10,16 @@ folders     = ['data/20160513']
 
 header      = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
-font        = ImageFont.truetype("FreeSans.ttf", 28)
+# font        = ImageFont.truetype("FreeSans.ttf", 28)
+font        = ImageFont.load_default()
 imagepath   = 'images/coalesce/base.jpg'
 
 files_amn   = 10
 stimuli_amn = 20
 grouped_val = True
 
-first_base  = 33
-home_run    = 128
+first_base  = 18
+home_run    = 65
 radius      = 26
 outline     = 3
 line_color  = (0,0,0)
@@ -146,7 +147,7 @@ def randomStimulus(stimuli, count=10, grouped=False) :
     }
 
 def saveImage(canvas, direction) :
-    output_path = "result/dump_visual/" + direction + "_" + str(dir_counter[direction]) + ".jpg"
+    output_path = "result/dump_visual/" + direction + "/" + str(dir_counter[direction]) + ".jpg"
     dir_counter[direction] += 1
 
     print output_path
@@ -168,23 +169,26 @@ def putChannel(canvas, data, stimulus_pos, iteree, direction) :
             current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
             suspectedMax    = max(current[first_base:home_run])
             averageBefore   = np.average(current[first_base:home_run])
-            percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
+            # percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
+            percentageDiff  = suspectedMax - averageBefore
 
-            if (percentageDiff > 200) :
-                fill_value  = (0,255,0)
-            elif (percentageDiff > 100) :
-                green_value = int(math.ceil((percentageDiff - 100) * 2)) + 55
-                fill_value  = (0,green_value,0)
-            else :
-                red_value   = int(math.ceil((100 - percentageDiff) * 2)) + 55
-                fill_value  = (red_value,0,0)
+            # if (percentageDiff > 200) :
+            #     fill_value  = (0,255,0)
+            # elif (percentageDiff > 100) :
+            #     green_value = int(math.ceil((percentageDiff - 100) * 2)) + 55
+            #     fill_value  = (0,green_value,0)
+            # else :
+            #     red_value   = int(math.ceil((100 - percentageDiff) * 2)) + 55
+            #     fill_value  = (red_value,0,0)
+            
             if (percentageDiff < 99) :
                 text_pos    = (position[key][0] - (radius * 0.6), position[key][1] - (radius * 0.6))
             else :
                 text_pos    = (position[key][0] - (radius * 0.9), position[key][1] - (radius * 0.6))
 
             addition.ellipse((position[key][0] - (radius + outline), position[key][1] - (radius + outline), position[key][0] + (radius + outline), position[key][1] + (radius + outline)), fill=line_color)
-            addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=fill_value)
+            # addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=fill_value)
+            addition.ellipse((position[key][0] - radius, position[key][1] - radius, position[key][0] + radius, position[key][1] + radius), fill=(0,int(percentageDiff),0))
             addition.text(text_pos, str(int(math.ceil(percentageDiff))), font=font, fill=text_color)
 
         del addition
