@@ -40,49 +40,13 @@ def loadStimuli(source) :
 def run() :
     start_time      = time.time()
 
-    min_peak        = []
-    max_peak        = []
+    folders         = ['data/parsed/transparent', 'data/parsed/whitebacked']
+    for current_dir in folders :
+        state       = current_dir.split('/')[2]
+        for file in os.listdir(current_dir):
+            source  = current_dir + '/' + file
+            
 
-    for current_dir in directory :
-        for afile in os.listdir(current_dir):
-            source      = current_dir + '/' + afile
-            print source
-
-            data        = readFromFile(source)
-            timestamp   = data[:,0]
-
-            stimuli     = loadStimuli(source)
-            stimuli_pos = findStimulus(timestamp, stimuli['time'])
-
-            plotGuinea  = source.split('_')[1]
-            plotDir     = plotRoot + plotGuinea + '/'
-
-            if plotGuinea not in plotIteree : plotIteree[plotGuinea] = { 'left' : 1, 'right' : 1, 'forward' : 1, 'stop' : 1 }
-
-            for stimulus_idx, stimulus_pos in enumerate(stimuli_pos) :
-                direction   = stimuli['direction'][stimulus_idx]
-                currIteree  = plotIteree[plotGuinea][direction]
-                plotIteree[plotGuinea][direction]   += 1
-
-                plotPath    = plotDir + direction + '/' + str(currIteree)
-
-                iteree      = range(2, 16)
-                if ((stimulus_pos + home_run) <= len(data[:,0])) :
-                    for key, val in enumerate(iteree) :
-                        current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
-
-                        min_peak.append(np.argmin(current))
-                        max_peak.append(np.argmax(current))
-
-                        # print "min : " + str(np.argmin(current)) + ". max : " + str(np.argmax(current))
-
-    print "max : " + str(np.amin(max_peak)) + " - " + str(np.amax(max_peak)) + ". mean : " + str(np.mean(max_peak)) + ". most : " + str(np.bincount(max_peak).argmax())
-    print "min : " + str(np.amin(min_peak)) + " - " + str(np.amax(min_peak)) + ". mean : " + str(np.mean(min_peak)) + ". most : " + str(np.bincount(min_peak).argmax())
-
-    plt.bar(np.arange(len(np.bincount(max_peak))), np.bincount(max_peak), align='center', alpha=0.5)
-    plt.figure()
-    plt.bar(np.arange(len(np.bincount(min_peak))), np.bincount(min_peak), align='center', alpha=0.5)
-    plt.show()
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)

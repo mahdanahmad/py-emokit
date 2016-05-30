@@ -6,7 +6,8 @@ from PIL import Image, ImageFont, ImageDraw
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
-folders     = ['data/20160513']
+# folders     = ['data/20160513']
+folders     = ['data/parsed/transparent', 'data/parsed/whitebacked']
 
 header      = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
@@ -159,8 +160,12 @@ def randomStimulus(stimuli, count=10, grouped=False) :
         'direction' : sorted_result[1]
     }
 
-def saveImage(canvas, direction) :
-    output_path = "result/dump_visual/" + direction + "/" + str(dir_counter[direction]) + ".jpg"
+def saveImage(canvas, direction, state=None) :
+    if state is None :
+        output_path = "result/dump_visual/" + direction + "/" + str(dir_counter[direction]) + ".jpg"
+    else :
+        output_path = "result/dump_visual/" + state + "/" + direction + "/" + str(dir_counter[direction]) + ".jpg"
+
     dir_counter[direction] += 1
 
     print output_path
@@ -174,7 +179,7 @@ def saveImage(canvas, direction) :
 
     canvas.save(output_path, "JPEG", quality=100, optimize=True, progressive=True)
 
-def putChannel(canvas, data, stimulus_pos, iteree, direction) :
+def putChannel(canvas, data, stimulus_pos, iteree, direction, state=None) :
     addition        = ImageDraw.Draw(canvas)
 
     if ((stimulus_pos + home_run) <= len(data[:,0])) :
@@ -225,7 +230,7 @@ def putChannel(canvas, data, stimulus_pos, iteree, direction) :
                 addition.ellipse(right_pos, fill=green)
 
         del addition
-        saveImage(canvas, direction)
+        saveImage(canvas, direction, state)
 
 def run() :
     start_time      = time.time()
@@ -234,6 +239,7 @@ def run() :
     randomed        = randomPick(files, files_amn, grouped_val)
 
     for filepath in randomed :
+        state       = filepath.split('/')[2]
         data        = readFromFile(filepath)
         timestamp   = data[:,0]
 
@@ -245,7 +251,7 @@ def run() :
             iteree      = range(2, 16)
 
             canvas      = Image.open(imagepath)
-            putChannel(canvas, data, stimulus_pos, iteree, stimuli_ran['direction'][stimulus_idx])
+            putChannel(canvas, data, stimulus_pos, iteree, stimuli_ran['direction'][stimulus_idx], state)
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
