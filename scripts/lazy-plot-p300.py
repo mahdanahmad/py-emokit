@@ -19,8 +19,8 @@ files_amn   = 10
 stimuli_amn = 20
 grouped_val = True
 
-first_base  = 18
-home_run    = 65
+first_base  = 33
+home_run    = 128
 radius      = 26
 outline     = 3
 line_color  = (0,0,0)
@@ -223,11 +223,17 @@ def putChannel(canvas, data, stimulus_pos, iteree, direction, state=None) :
             right_pos   = (position[right_side][0] - radius, position[right_side][1] - radius, position[right_side][0] + radius, position[right_side][1] + radius)
 
             if (difference > 0) :
+                text_pos    = (position[left_side][0] - (radius * 0.5), position[left_side][1] - (radius * 0.5))
+
                 addition.ellipse(left_pos, fill=green)
                 addition.ellipse(right_pos, fill=red)
             else :
+                text_pos    = (position[right_side][0] - (radius * 0.5), position[right_side][1] - (radius * 0.5))
+
                 addition.ellipse(left_pos, fill=red)
                 addition.ellipse(right_pos, fill=green)
+
+            addition.text(text_pos, str(int(abs(math.ceil(difference)))), font=font, fill=text_color)
 
         del addition
         saveImage(canvas, direction, state)
