@@ -82,22 +82,21 @@ def run() :
     output['all']   = open(fullpath.replace('forthename', 'all'), 'w')
     output['all'].write(','.join(header) + '\n')
 
-    # directory       = ['data/20160513']
-    directory       = ['data/parsed/transparent', 'data/parsed/whitebacked']
+    directory       = ['data/20160530']
     for current_dir in directory :
-        state       = current_dir.split('/')[2]
-        if not os.path.isfile(fullpath.replace('forthename', state)) :
-            output[state]  = open(fullpath.replace('forthename', state), 'w')
-            output[state].write(','.join(header) + '\n')
-            
+        # state       = current_dir.split('/')[2]
+        # if not os.path.isfile(fullpath.replace('forthename', state)) :
+        #     output[state]  = open(fullpath.replace('forthename', state), 'w')
+        #     output[state].write(','.join(header) + '\n')
+
         for afile in os.listdir(current_dir):
             source      = current_dir + '/' + afile
             guinea      = source.split('_')[1]
             print source
 
-            # if not os.path.isfile(fullpath.replace('forthename', guinea)) :
-                # output[guinea]  = open(fullpath.replace('forthename', guinea), 'w')
-                # output[guinea].write(','.join(header) + '\n')
+            if not os.path.isfile(fullpath.replace('forthename', guinea)) :
+                output[guinea]  = open(fullpath.replace('forthename', guinea), 'w')
+                output[guinea].write(','.join(header) + '\n')
 
             data        = readFromFile(source)
             timestamp   = data[:,0]
@@ -139,10 +138,12 @@ def run() :
                         difference  = channel_vals[left_side] - channel_vals[right_side]
 
                         output['all'].write("{0:.2f},".format(difference))
-                        output[state].write("{0:.2f},".format(difference))
+                        output[guinea].write("{0:.2f},".format(difference))
+                        # output[state].write("{0:.2f},".format(difference))
 
                     output['all'].write(stimuli['direction'][stimulus_idx] + '\n')
-                    output[state].write(stimuli['direction'][stimulus_idx] + '\n')
+                    output[guinea].write(stimuli['direction'][stimulus_idx] + '\n')
+                    # output[state].write(stimuli['direction'][stimulus_idx] + '\n')
 
 if __name__ == "__main__":
     run()

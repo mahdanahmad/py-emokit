@@ -6,8 +6,7 @@ from PIL import Image, ImageFont, ImageDraw
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
-# folders     = ['data/20160513']
-folders     = ['data/parsed/transparent', 'data/parsed/whitebacked']
+folders     = ['data/20160530']
 
 header      = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
@@ -245,7 +244,7 @@ def run() :
     randomed        = randomPick(files, files_amn, grouped_val)
 
     for filepath in randomed :
-        state       = filepath.split('/')[2]
+        # state       = filepath.split('/')[2]
         data        = readFromFile(filepath)
         timestamp   = data[:,0]
 
@@ -257,7 +256,7 @@ def run() :
             iteree      = range(2, 16)
 
             canvas      = Image.open(imagepath)
-            putChannel(canvas, data, stimulus_pos, iteree, stimuli_ran['direction'][stimulus_idx], state)
+            putChannel(canvas, data, stimulus_pos, iteree, stimuli_ran['direction'][stimulus_idx])
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
