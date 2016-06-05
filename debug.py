@@ -92,17 +92,19 @@ def run() :
                             sum_channel[direction][avail_channel[val[1]]]   += 1
 
 
-        fullpath        = os.path.join('result/dump_channel.csv')
-        if not os.path.exists(os.path.dirname(fullpath)):
-            try:
-                os.makedirs(os.path.dirname(fullpath))
-            except OSError as exc: # Guard against race condition
-                if exc.errno != errno.EEXIST:
-                    raise
+    fullpath        = os.path.join('result/dump_channel.csv')
+    if not os.path.exists(os.path.dirname(fullpath)):
+        try:
+            os.makedirs(os.path.dirname(fullpath))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
 
-        output          = open(fullpath, 'w')
-        output.write(','.join(header) + '\n')
+    output          = open(fullpath, 'w')
+    output.write('F3,F4,FC5,FC6,AF3,AF4,F7,F8,T7,T8,P7,P8,O1,O2,Direction\n')
 
+    for direction, val in sum_channel.iteritems() :
+        output.write('%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n' % (val['F3'], val['F4'], val['FC5'], val['FC6'], val['AF3'], val['AF4'], val['F7'], val['F8'], val['T7'], val['T8'], val['P7'], val['P8'], val['O1'], val['O2'], direction))
 
     elapsed_time    = time.time() - start_time
     print 'elapsed = %.3f s' % (elapsed_time)
