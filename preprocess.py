@@ -6,16 +6,21 @@ def doCentering(data) :
 
     return data - data.mean()
 
-def createButterBandpass(lowcut, highcut, fs, order = 10) :
+def createButterPass(lowcut, highcut, fs, order = 10, passtype='band') :
     nyq         = 0.5 * fs
 
     low         = lowcut / nyq
     high        = highcut / nyq
 
-    return signal.butter(order, [low, high], btype='band')
+    if passtype is 'low' :
+        return signal.butter(order, low, btype='low')
+    elif passtype is 'high' :
+        return signal.butter(order, high, btype='high')
+    else :
+        return signal.butter(order, [low, high], btype=passtype)
 
-def doFiltering(data, lowcut, highcut, fs, order = 10) :
-    b, a        = createButterBandpass(lowcut, highcut, fs, order)
+def doFiltering(data, lowcut, highcut, fs, order = 10, passtype='band') :
+    b, a        = createButterPass(lowcut, highcut, fs, order, bandtype)
     y           = signal.lfilter(b, a, data)
 
     return y
