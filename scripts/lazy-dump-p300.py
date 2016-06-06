@@ -14,6 +14,12 @@ try :
 except:
     home_run    = 65
 
+lowcut          = 0
+highcut         = 20
+sampling_rate   = 128
+order           = 10
+passtype        = 'high'
+
 # header      = [
 #     "min_F3", "max_F3",
 #     "min_FC5", "max_FC5",
@@ -31,25 +37,25 @@ except:
 #     "min_F4", "max_F4",
 #     "Guinea", "Direction"
 # ]
-header      = [
-    "F3", "F3_pos",
-    "FC5", "FC5_pos",
-    "AF3", "AF3_pos",
-    "F7", "F7_pos",
-    "T7", "T7_pos",
-    "P7", "P7_pos",
-    "O1", "O1_pos",
-    "O2", "O2_pos",
-    "P8", "P8_pos",
-    "T8", "T8_pos",
-    "F8", "F8_pos",
-    "AF4", "AF4_pos",
-    "FC6", "FC6_pos",
-    "F4", "F4_pos",
-    "Direction"
-]
+# header      = [
+#     "F3", "F3_pos",
+#     "FC5", "FC5_pos",
+#     "AF3", "AF3_pos",
+#     "F7", "F7_pos",
+#     "T7", "T7_pos",
+#     "P7", "P7_pos",
+#     "O1", "O1_pos",
+#     "O2", "O2_pos",
+#     "P8", "P8_pos",
+#     "T8", "T8_pos",
+#     "F8", "F8_pos",
+#     "AF4", "AF4_pos",
+#     "FC6", "FC6_pos",
+#     "F4", "F4_pos",
+#     "Direction"
+# ]
 # header      = ["F3", "FC5", "AF3", "F7", "T7", "P7", "O1", "O2", "P8", "T8", "F8", "AF4", "FC6", "F4", "Direction"]
-# header      = ["Fin", "FC", "AF", "Fout", "T", "P", "O", "Direction"]
+header      = ["Fin", "FC", "AF", "Fout", "T", "P", "O", "Direction"]
 
 couples     = [
     [0, 13], # F3 & F4
@@ -123,7 +129,7 @@ def run() :
                     channel_vals    = []
                     for key, val in enumerate(iteree) :
                         current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
-                        current         = doFiltering(current)
+                        current         = doFiltering(current, lowcut, highcut, sampling_rate, order, passtype)
                         suspectedMax    = max(current[first_base:])
                         positionMax     = np.argmax(current[first_base:])
                         averageBefore   = np.average(current[:first_base])
@@ -133,16 +139,16 @@ def run() :
 
                         channel_vals.append(int(math.ceil(max_peak)))
 
-                        output['all'].write("{0:.2f},".format(max_peak) + str(positionMax) + ",")
-                        output[guinea].write("{0:.2f},".format(max_peak) + str(positionMax) + ",")
+                        # output['all'].write("{0:.2f},".format(max_peak) + str(positionMax) + ",")
+                        # output[guinea].write("{0:.2f},".format(max_peak) + str(positionMax) + ",")
 
                     for val in couples :
                         left_side   = val[0]
                         right_side  = val[1]
                         difference  = channel_vals[left_side] - channel_vals[right_side]
 
-                        # output['all'].write("{0:.2f},".format(difference))
-                        # output[guinea].write("{0:.2f},".format(difference))
+                        output['all'].write("{0:.2f},".format(difference))
+                        output[guinea].write("{0:.2f},".format(difference))
 
                     output['all'].write(stimuli['direction'][stimulus_idx] + '\n')
                     output[guinea].write(stimuli['direction'][stimulus_idx] + '\n')

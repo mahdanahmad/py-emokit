@@ -20,7 +20,7 @@ def createButterPass(lowcut, highcut, fs, order = 10, passtype='band') :
         return signal.butter(order, [low, high], btype=passtype)
 
 def doFiltering(data, lowcut, highcut, fs, order = 10, passtype='band') :
-    b, a        = createButterPass(lowcut, highcut, fs, order, bandtype)
+    b, a        = createButterPass(lowcut, highcut, fs, order, passtype)
     y           = signal.lfilter(b, a, data)
 
     return y
