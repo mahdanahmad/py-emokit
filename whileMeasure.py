@@ -60,7 +60,7 @@ def coverBack() :
 
 def drawRectangle(img) :
     surface = pygame.Surface(env.getRectSize())
-    # surface.fill(clr_default)
+    surface.fill(clr_default)
     surface.blit(img, (0, 0))
 
     screen.blit(surface, position)

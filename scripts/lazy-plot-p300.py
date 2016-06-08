@@ -6,7 +6,7 @@ from PIL import Image, ImageFont, ImageDraw
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from preprocess import *
 
-folders     = ['data/20160530']
+folders     = ['data/20160608']
 
 header      = ["F3","FC5","AF3","F7","T7","P7","O1","O2","P8","T8","F8","AF4","FC6","F4"]
 
