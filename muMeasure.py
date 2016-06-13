@@ -1,4 +1,4 @@
-import os, sys, time, errno, pygame, random, platform
+import os, sys, time, errno, pygame, random, platform, math
 import matplotlib.pyplot as plt
 
 from emokit.emotiv import Emotiv
@@ -10,10 +10,10 @@ if platform.system() == "Windows":
     import socket  # Needed to prevent gevent crashing on Windows. (surfly / gevent issue #459)
 import gevent
 
-wasted_time     = 10
-between_time    = 3
+wasted_time     = 5
+between_time    = 4
 stimulus_out    = 1
-stimulus_shown  = range(0,192)
+stimulus_shown  = range(0,256)
 
 try :
     name    = sys.argv[1]
@@ -45,6 +45,7 @@ updatable   = position + env.getRectSize()
 run         = True
 
 avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
+line_count  = ['stop', 'fill_left', 'fill_right', 'fill_forward', 'stop', 'fill_left', 'fill_right', 'fill_forward', 'stop', 'fill_left', 'fill_right', 'fill_forward', 'stop', 'fill_left', 'fill_right', 'fill_forward', 'stop', 'fill_left', 'fill_right', 'fill_forward']
 
 image       = {}
 image_ctr   = {}
@@ -140,11 +141,12 @@ if __name__ == "__main__":
                     iteree += 1
 
                 if ((iteree % between_time) is stimulus_out) :
-                    image_state = random.choice(avail_state)
-
-                    image_ctr[image_state]  -= 1
-                    if (image_ctr[image_state] is 0) :
-                        avail_state.remove(image_state)
+                    image_state = line_count[int(math.floor(iteree / 4))]
+                    # image_state = random.choice(avail_state)
+                    #
+                    # image_ctr[image_state]  -= 1
+                    # if (image_ctr[image_state] is 0) :
+                    #     avail_state.remove(image_state)
 
             pygame.display.update(updatable)
             gevent.sleep(0)
