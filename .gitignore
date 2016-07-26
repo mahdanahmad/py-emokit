@@ -10,3 +10,4 @@ stimulus/env.pyc
 stimulus/__init__.pyc
 stimulus/stimulus_env.pyc
 result/dump*
+data/forTables
