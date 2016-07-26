@@ -14,7 +14,8 @@ clr_default = env.getColor('white')
 
 screen.fill(clr_back)
 
-avail_state = ['stop', 'left', 'right', 'forward']
+# avail_state = ['stop', 'fill_left', 'fill_right', 'fill_forward']
+avail_state = ['prev_stop', 'left', 'right', 'forward']
 
 def drawRectangle(pos, img) :
     surface = pygame.Surface(env.getRectSize())
@@ -34,7 +35,7 @@ def eventLoop() :
                 sys.exit()
 
 def run() :
-    for val in avail_state : drawRectangle(env.getRectPos(val), env.getRectIMG(val))
+    for val in avail_state : drawRectangle(env.getRectPos(val.replace('fill_', '').replace('prev_', '')), env.getRectIMG(val))
 
     pygame.display.flip()
 

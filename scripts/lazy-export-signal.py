@@ -68,9 +68,13 @@ def run() :
                 if ((stimulus_pos + home_run) <= len(data[:,0])) :
                     for key, val in enumerate(iteree) :
                         current         = moveToAxis(data[:,val][stimulus_pos:(stimulus_pos + home_run)])
-                        suspectedMax    = max(current[first_base:home_run])
-                        averageBefore   = np.average(current[first_base:home_run])
-                        percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
+                        # suspectedMax    = max(current[first_base:home_run])
+                        # averageBefore   = np.average(current[first_base:home_run])
+                        # percentageDiff  = countPercentageDifferent(suspectedMax, averageBefore)
+
+                        suspectedPower  = countPower(current[first_base:home_run])
+                        totalPower      = countPower(current[:home_run])
+                        percentageDiff  = (suspectedPower * 100) / totalPower
 
                         yPlot           = moveToAxis(data[:,val][(stimulus_pos - 15):(stimulus_pos + 192)])
                         xPlot           = timestamp[(stimulus_pos - 15):(stimulus_pos + 192)] - timestamp[stimulus_pos]

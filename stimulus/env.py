@@ -19,6 +19,7 @@ filename        = {
     'left'          : 'arrow-left.png',
     'right'         : 'arrow-right.png',
     'forward'       : 'arrow-forward.png',
+    'prev_stop'     : 'prev-stop.png',
     'fill_left'     : 'fill-left.png',
     'fill_right'    : 'fill-right.png',
     'fill_forward'  : 'fill-forward.png',
@@ -68,6 +69,7 @@ class Env():
         self.__img_left     = self.__setImage('left')
         self.__img_right    = self.__setImage('right')
         self.__img_forward  = self.__setImage('forward')
+        self.__prev_stop    = self.__setImage('prev_stop')
         self.__fill_left    = self.__setImage('fill_left')
         self.__fill_right   = self.__setImage('fill_right')
         self.__fill_forward = self.__setImage('fill_forward')
@@ -103,6 +105,7 @@ class Env():
             'left'          : self.__img_left,
             'right'         : self.__img_right,
             'forward'       : self.__img_forward,
+            'prev_stop'     : self.__prev_stop,
             'fill_left'     : self.__fill_left,
             'fill_right'    : self.__fill_right,
             'fill_forward'  : self.__fill_forward

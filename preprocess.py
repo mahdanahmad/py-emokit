@@ -4,6 +4,7 @@ import scipy.signal as signal
 def doCentering(data) :
     data        = np.array(data)
 
+    # print data.mean()
     return data - data.mean()
 
 def createButterPass(lowcut, highcut, fs, order = 10, passtype='band') :
@@ -26,6 +27,8 @@ def doFiltering(data, lowcut, highcut, fs, order = 10, passtype='band') :
     return y
 
 def createFFT(data) :
+    # print (np.fft.fft(data))
+
     return np.fft.rfft(data)
 
 def createPSD(data, fs = 128) :
@@ -117,4 +120,4 @@ def chainSSVEP(data, fs, lowcut, highcut) :
     result  = createFFT(result)
     result  = createPSD(result, fs)
 
-    return result
+    return np.argmax(result)
