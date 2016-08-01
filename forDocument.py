@@ -11,7 +11,7 @@ low_limit       = 5
 high_limit      = 15
 sampling_rate   = 128
 
-# np.set_printoptions(precision=3)
+np.set_printoptions(precision=3)
 
 start_sec       = 5
 end_sec         = 6
@@ -34,7 +34,7 @@ def run() :
     O2          = data[(sampling_rate * start_sec):(sampling_rate * end_sec),9]
     # print O1
     # print 'Raw Data'
-    # print O2
+    # print O2, 4
     # print ''
     # print ''
 
@@ -48,10 +48,10 @@ def run() :
 
     # centered_O1 = doCentering(O1)
     centered_O2 = doCentering(O2)
-    print 'Centered'
-    print centered_O2
-    print ''
-    print ''
+    # print 'Centered'
+    # print centered_O2
+    # print ''
+    # print ''
 
     plt.plot((x * 1000 / sampling_rate), centered_O2)
     plt.title('Centered Data')
@@ -61,10 +61,10 @@ def run() :
 
     # filtered_O1 = doFiltering(centered_O1, low_limit, high_limit, sampling_rate)
     filtered_O2 = doFiltering(centered_O2, low_limit, high_limit, sampling_rate)
-    print 'Filtered'
-    print filtered_O2
-    print ''
-    print ''
+    # print 'Filtered'
+    # print filtered_O2
+    # print ''
+    # print ''
 
     plt.plot((x * 1000 / sampling_rate), filtered_O2)
     plt.title('Filtered Data')
@@ -74,10 +74,10 @@ def run() :
 
     # fft_O1      = createFFT(filtered_O1)
     fft_O2      = createFFT(filtered_O2)
-    print 'FFT'
-    print fft_O2
-    print ''
-    print ''
+    # print 'FFT'
+    # print fft_O2
+    # print ''
+    # print ''
 
     plt.plot(fft_O2)
     plt.title('FFT Result')
@@ -86,10 +86,10 @@ def run() :
     plt.figure()
 
     fw, PSDw    = signal.welch(filtered_O2, sampling_rate)
-    print 'Welch'
-    print PSDw
-    print ''
-    print ''
+    # print 'Welch'
+    # print PSDw
+    # print ''
+    # print ''
 
     # plt.semilogy(fw, PSDw)
     # plt.xlabel('Frequency [Hz]')
@@ -103,10 +103,10 @@ def run() :
     plt.figure()
 
     fp, PSDp    = signal.periodogram(filtered_O2, sampling_rate)
-    print 'Periodogram'
-    print PSDp
-    print ''
-    print ''
+    # print 'Periodogram'
+    # print PSDp
+    # print ''
+    # print ''
 
     plt.plot(fp, PSDp)
     plt.title('Periodogram Result')
